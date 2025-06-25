@@ -8,7 +8,7 @@ import ru.practicum.dto.hub.event.HubEvent;
 import ru.practicum.dto.sensor.SensorEvent;
 
 @RestController
-@RequestMapping("/event")
+@RequestMapping("/events")
 @RequiredArgsConstructor
 public class Controller {
     private final CollectorService collectorService;
@@ -19,7 +19,7 @@ public class Controller {
         collectorService.collectSensorEvent(sensorEvent);
     }
 
-    @PostMapping("/hub")
+    @PostMapping("/hubs")
     @ResponseStatus(HttpStatus.OK)
     public void addHubEvent(@Valid @RequestBody HubEvent hubEvent) {
         collectorService.collectHubEvent(hubEvent);
