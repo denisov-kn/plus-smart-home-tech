@@ -1,6 +1,7 @@
 package ru.practicum.sevice;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CollectorServiceImpl implements CollectorService {
 
     private final KafkaProducer<String, SpecificRecordBase> producer;
@@ -31,12 +33,14 @@ public class CollectorServiceImpl implements CollectorService {
     @Override
     public void collectSensorEvent(SensorEvent sensorEvent) {
         SensorEventAvro avro = sensorRegistry.handle(sensorEvent);
+        log.info("Avro sensor event: {}", avro);
         producer.send(new ProducerRecord<>(sensorTopic, avro));
     }
 
     @Override
     public void collectHubEvent(HubEvent hubEvent) {
         HubEventAvro avro = hubRegistry.handle(hubEvent);
+        log.info("Avro hub event: {}", avro);
         producer.send(new ProducerRecord<>(hubTopic, avro));
     }
 }
