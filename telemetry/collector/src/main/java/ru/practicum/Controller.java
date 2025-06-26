@@ -4,8 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.hub.event.HubEvent;
-import ru.practicum.dto.sensor.SensorEvent;
+import ru.practicum.model.hub.event.HubEvent;
+import ru.practicum.model.sensor.SensorEvent;
+import ru.practicum.sevice.CollectorService;
 
 @RestController
 @RequestMapping("/events")
