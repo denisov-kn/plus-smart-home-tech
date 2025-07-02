@@ -1,4 +1,4 @@
-package ru.practicum.sevice.handler.sensor;
+package ru.practicum.sevice.kafka.handler.sensor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

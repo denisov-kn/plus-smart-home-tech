@@ -1,4 +1,4 @@
-package ru.practicum.sevice.handler.sensor;
+package ru.practicum.sevice.kafka.handler.sensor;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.model.sensor.LightSensorEvent;

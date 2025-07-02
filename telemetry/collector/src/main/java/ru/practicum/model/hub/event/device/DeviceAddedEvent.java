@@ -1,10 +1,7 @@
 package ru.practicum.model.hub.event.device;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.model.hub.event.HubEvent;
 import ru.practicum.model.hub.event.HubEventType;

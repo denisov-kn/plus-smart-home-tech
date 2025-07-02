@@ -1,30 +1,29 @@
-package ru.practicum.sevice.handler.sensor;
+package ru.practicum.sevice.kafka.handler.sensor;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.model.sensor.ClimateSensorEvent;
 import ru.practicum.model.sensor.SensorEventType;
-import ru.yandex.practicum.kafka.telemetry.event.ClimateSensorAvro;
+import ru.practicum.model.sensor.TemperatureSensorEvent;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
+import ru.yandex.practicum.kafka.telemetry.event.TemperatureSensorAvro;
 
 @Component
-public class ClimateSensorEventHandler implements SensorEventHandler<ClimateSensorEvent> {
+public class TemperatureSensorEventHandler implements SensorEventHandler<TemperatureSensorEvent> {
 
     @Override
-    public SensorEventAvro handle(ClimateSensorEvent event) {
+    public SensorEventAvro handle(TemperatureSensorEvent event) {
         return SensorEventAvro.newBuilder()
                 .setId(event.getId())
                 .setHubId(event.getHubId())
                 .setTimestamp(event.getTimestamp())
-                .setPayload(ClimateSensorAvro.newBuilder()
+                .setPayload(TemperatureSensorAvro.newBuilder()
                         .setTemperatureC(event.getTemperatureC())
-                        .setHumidity(event.getHumidity())
-                        .setCo2Level(event.getCo2Level())
+                        .setTemperatureF(event.getTemperatureF())
                         .build())
                 .build();
     }
 
     @Override
     public SensorEventType getType() {
-        return SensorEventType.CLIMATE_SENSOR_EVENT;
+        return SensorEventType.TEMPERATURE_SENSOR_EVENT;
     }
 }

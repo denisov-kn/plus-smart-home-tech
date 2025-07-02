@@ -1,4 +1,4 @@
-package ru.practicum.sevice.handler.hub;
+package ru.practicum.sevice.kafka.handler.hub;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.model.hub.event.HubEventType;
@@ -14,7 +14,7 @@ public class DeviceAddedHandler implements HubEventHandler<DeviceAddedEvent> {
     public HubEventAvro handle(DeviceAddedEvent e) {
         DeviceAddedEventAvro payload = DeviceAddedEventAvro.newBuilder()
                 .setId(e.getId())
-                .setType(MappingUtils.mapDeviceType(e.getDeviceType()))
+                .setType(MappingUtils.mapAvroDeviceType(e.getDeviceType()))
                 .build();
 
         return HubEventAvro.newBuilder()

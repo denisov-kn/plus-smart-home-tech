@@ -1,4 +1,4 @@
-package ru.practicum.sevice.handler.hub;
+package ru.practicum.sevice.kafka.handler.hub;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

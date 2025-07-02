@@ -1,4 +1,4 @@
-package ru.practicum.sevice;
+package ru.practicum.sevice.kafka;
 
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;

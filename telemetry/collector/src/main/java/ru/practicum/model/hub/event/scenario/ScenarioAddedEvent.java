@@ -4,11 +4,9 @@ package ru.practicum.model.hub.event.scenario;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import ru.practicum.model.hub.event.HubEvent;
 import ru.practicum.model.hub.event.HubEventType;
 
