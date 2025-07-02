@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.SuperBuilder;
 import ru.practicum.model.hub.event.HubEvent;
 import ru.practicum.model.hub.event.HubEventType;
 

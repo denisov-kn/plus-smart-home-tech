@@ -13,5 +13,11 @@ public class ScenarioCondition {
     String sensorId;
     ConditionType type;
     OperationType operation;
-    Integer value;
+    Integer intValue;
+    Boolean booleanValue;
+
+    public Object getValue() {
+        if (booleanValue != null) return booleanValue;
+        else return intValue;
+    }
 }

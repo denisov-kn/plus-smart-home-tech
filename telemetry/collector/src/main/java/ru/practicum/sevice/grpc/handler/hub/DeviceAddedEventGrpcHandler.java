@@ -23,7 +23,7 @@ public class DeviceAddedEventGrpcHandler implements HubEventGrpcHandler{
     @Override
     public void handle(HubEventProto event) {
         DeviceAddedEvent deviceAddedEvent = new DeviceAddedEvent();
-        deviceAddedEvent.setId(deviceAddedEvent.getId());
+        deviceAddedEvent.setId(event.getDeviceAdded().getId());
         deviceAddedEvent.setHubId(event.getHubId());
         deviceAddedEvent.setTimestamp(
                 Instant.ofEpochSecond(

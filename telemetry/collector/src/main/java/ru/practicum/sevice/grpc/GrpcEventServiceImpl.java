@@ -1,5 +1,6 @@
 package ru.practicum.sevice.grpc;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.sevice.grpc.handler.hub.HubEventGrpcHandler;
 import ru.practicum.sevice.grpc.handler.sensor.SensorEventGrpcHandler;
@@ -12,7 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-
+@Slf4j
 public class GrpcEventServiceImpl implements GrpcEventService {
 
     private final Map<HubEventProto.PayloadCase, HubEventGrpcHandler> hubEventHandlers;
@@ -35,6 +36,8 @@ public class GrpcEventServiceImpl implements GrpcEventService {
     @Override
     public void processSensorEvent(SensorEventProto sensorEventProto) {
 
+        log.info("Processing Proto Sensor Event: {}", sensorEventProto);
+
         if (sensorEventHandlers.containsKey(sensorEventProto.getPayloadCase()))
             sensorEventHandlers.get(sensorEventProto.getPayloadCase()).handle(sensorEventProto);
         else
@@ -43,6 +46,9 @@ public class GrpcEventServiceImpl implements GrpcEventService {
 
     @Override
     public void processHubEvent(HubEventProto hubEventProto) {
+
+        log.info("Processing Proto Hub Event: {}", hubEventProto);
+
         if (hubEventHandlers.containsKey(hubEventProto.getPayloadCase()))
             hubEventHandlers.get(hubEventProto.getPayloadCase()).handle(hubEventProto);
         else

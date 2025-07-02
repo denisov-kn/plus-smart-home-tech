@@ -32,6 +32,7 @@ public class KafkaServiceImpl implements KafkaService {
 
     @Override
     public void kafkaSensorEvent(SensorEvent sensorEvent) {
+        log.info("Sensor event received: {}", sensorEvent);
         SensorEventAvro avro = sensorRegistry.handle(sensorEvent);
         log.info("Avro sensor event: {}", avro);
         producer.send(new ProducerRecord<>(sensorTopic, avro));
@@ -39,6 +40,7 @@ public class KafkaServiceImpl implements KafkaService {
 
     @Override
     public void kafkaHubEvent(HubEvent hubEvent) {
+        log.info("Hub event received: {}", hubEvent);
         HubEventAvro avro = hubRegistry.handle(hubEvent);
         log.info("Avro hub event: {}", avro);
         producer.send(new ProducerRecord<>(hubTopic, avro));

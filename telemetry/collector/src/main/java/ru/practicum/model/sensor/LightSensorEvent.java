@@ -6,7 +6,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LightSensorEvent extends SensorEvent {
 

@@ -108,11 +108,26 @@ public class MappingUtils {
 
     public static ScenarioCondition mapScenarioCondition(ScenarioConditionProto proto) {
 
+        Integer intValue = null;
+        Boolean booleanValue = null;
+
+        switch (proto.getValueCase()) {
+            case BOOL_VALUE:
+                booleanValue = proto.getBoolValue();
+                break;
+            case INT_VALUE:
+                intValue = proto.getIntValue();
+                break;
+            case VALUE_NOT_SET:
+            default:
+        }
+
         return new ScenarioCondition(
                 proto.getSensorId(),
                 mapConditionType(proto.getType()),
                 mapOperationType(proto.getOperation()),
-                proto.getIntValue()
+                intValue,
+                booleanValue
         );
     }
 

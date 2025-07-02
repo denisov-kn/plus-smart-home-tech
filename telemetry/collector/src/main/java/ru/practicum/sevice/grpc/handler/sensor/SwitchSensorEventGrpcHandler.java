@@ -25,6 +25,7 @@ public class SwitchSensorEventGrpcHandler implements SensorEventGrpcHandler {
 
         SwitchSensorEvent switchSensorEvent = new SwitchSensorEvent();
         switchSensorEvent.setId(event.getId());
+        switchSensorEvent.setHubId(event.getHubId());
         switchSensorEvent.setTimestamp(
                 Instant.ofEpochSecond(
                         event.getTimestamp().getSeconds(),
