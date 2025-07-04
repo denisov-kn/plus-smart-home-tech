@@ -1,4 +1,4 @@
-package ru.practicum.sevice.handler.hub;
+package ru.practicum.sevice.kafka.handler.hub;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.model.hub.event.HubEventType;
@@ -22,11 +22,11 @@ public class ScenarioAddedEventHandler implements HubEventHandler<ScenarioAddedE
     @Override
     public HubEventAvro handle(ScenarioAddedEvent event) {
         List<ScenarioConditionAvro> conditions = event.getConditions().stream()
-                .map(MappingUtils::mapScenarioCondition)
+                .map(MappingUtils::mapAvroScenarioCondition)
                 .toList();
 
         List<DeviceActionAvro> actions = event.getActions().stream()
-                .map(MappingUtils::mapDeviceAction)
+                .map(MappingUtils::mapAvroDeviceAction)
                 .toList();
 
         ScenarioAddedEventAvro payload = ScenarioAddedEventAvro.newBuilder()

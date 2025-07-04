@@ -1,4 +1,4 @@
-package ru.practicum.sevice.handler.hub;
+package ru.practicum.sevice.kafka.handler.hub;
 
 import ru.practicum.model.hub.event.HubEvent;
 import ru.practicum.model.hub.event.HubEventType;

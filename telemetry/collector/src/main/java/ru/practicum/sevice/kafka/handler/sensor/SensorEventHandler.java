@@ -1,4 +1,4 @@
-package ru.practicum.sevice.handler.sensor;
+package ru.practicum.sevice.kafka.handler.sensor;
 
 import ru.practicum.model.sensor.SensorEvent;
 import ru.practicum.model.sensor.SensorEventType;

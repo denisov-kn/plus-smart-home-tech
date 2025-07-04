@@ -2,15 +2,13 @@ package ru.practicum.model.sensor;
 
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SwitchSensorEvent extends SensorEvent {
 
