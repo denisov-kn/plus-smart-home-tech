@@ -1,12 +1,12 @@
-package ru.practicum.configuration;
+package ru.practicum.config;
 
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.apache.kafka.common.serialization.StringSerializer;
 import ru.practicum.kafka.serialazer.GeneralSerializer;
 
 import java.util.Properties;
@@ -18,7 +18,7 @@ public class KafkaProducerConfig {
     private String bootstrapServers;
 
     @Bean
-    public KafkaProducer<String, SpecificRecordBase> producer() {
+    public KafkaProducer<String, SpecificRecordBase> kafkaProducer() {
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
