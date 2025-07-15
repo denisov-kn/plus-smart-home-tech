@@ -15,15 +15,18 @@ import ru.practicum.model.hub.event.scenario.OperationType;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
 public class ConditionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     ConditionType type;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     OperationType operation;
 
     @NotNull

@@ -21,6 +21,7 @@ public class ActionEntity {
     Long id;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     ActionType type;
 
     @NotNull

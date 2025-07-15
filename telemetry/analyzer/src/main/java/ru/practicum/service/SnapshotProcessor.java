@@ -59,6 +59,8 @@ public class SnapshotProcessor {
 
                     List<DeviceActionRequest> deviceActionRequests =  evaluator.evaluate(sensorsSnapshotAvro);
 
+                    log.info("Analyzer send deviceActionRequests {} ", deviceActionRequests);
+
                     grpcSender.sendDeviceActions(deviceActionRequests);
 
 

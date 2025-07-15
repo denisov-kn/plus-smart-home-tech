@@ -1,6 +1,7 @@
 package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.stereotype.Service;
 import ru.practicum.EntityMappingUtils;
@@ -12,10 +13,12 @@ import ru.practicum.repository.ScenarioConditionLinkRepository;
 import ru.practicum.repository.ScenarioRepository;
 import ru.yandex.practicum.kafka.telemetry.event.*;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ScenarioEvaluatorServiceImpl implements ScenarioEvaluatorService {
@@ -26,42 +29,58 @@ public class ScenarioEvaluatorServiceImpl implements ScenarioEvaluatorService {
 
     @Override
     public List<DeviceActionRequest> evaluate(SensorsSnapshotAvro sensorsSnapshotAvro) {
-       List<ScenarioEntity>  scenarioEntities = scenarioRepository.findByHubId(sensorsSnapshotAvro.getHubId());
 
-       List<DeviceActionRequest> results = new ArrayList<>();
+        log.info("Analyzer:ScenarioEvaluatorService - sensorsSnapshotAvro: {}", sensorsSnapshotAvro);
 
 
-       for (ScenarioEntity scenarioEntity : scenarioEntities) {
-           List<ScenarioConditionLink> conditionLinks = scenarioConditionLinkRepository.findByScenarioId(scenarioEntity.getId());
+        List<ScenarioEntity> scenarioEntities = scenarioRepository.findByHubId(sensorsSnapshotAvro.getHubId());
+        List<DeviceActionRequest> results = new ArrayList<>();
 
-           boolean allConditionMatch = conditionLinks.stream()
-                   .allMatch(cond -> conditionMatch(cond, sensorsSnapshotAvro));
 
-           if (allConditionMatch) {
-               List<ScenarioActionLink> actions = scenarioActionLinkRepository.findAllByScenarioId((scenarioEntity.getId()));
+        for (ScenarioEntity scenarioEntity : scenarioEntities) {
+            List<ScenarioConditionLink> conditionLinks = scenarioConditionLinkRepository.findByScenarioId(scenarioEntity.getId());
 
-               for (ScenarioActionLink actionLink : actions) {
-                   ActionEntity action = actionLink.getAction();
-                   SensorEntity sensor = actionLink.getSensor();
-                   DeviceActionRequest deviceActionRequest = new DeviceActionRequest();
-                   deviceActionRequest.setHubId(sensorsSnapshotAvro.getHubId());
-                   deviceActionRequest.setAction(EntityMappingUtils.mapDeviceAction(sensor.getId(), action));
-                   deviceActionRequest.setScenarioName(scenarioEntity.getName());
+            boolean allConditionMatch = conditionLinks.stream()
+                    .allMatch(cond -> conditionMatch(cond, sensorsSnapshotAvro));
 
-                   results.add(deviceActionRequest);
-               }
-           }
+            if (allConditionMatch) {
+                List<ScenarioActionLink> actions = scenarioActionLinkRepository.findAllByScenarioId((scenarioEntity.getId()));
 
-       }
-       return results;
+                for (ScenarioActionLink actionLink : actions) {
+                    ActionEntity action = actionLink.getAction();
+                    SensorEntity sensor = actionLink.getSensor();
+                    DeviceActionRequest deviceActionRequest = new DeviceActionRequest();
+                    deviceActionRequest.setHubId(sensorsSnapshotAvro.getHubId());
+                    deviceActionRequest.setAction(EntityMappingUtils.mapDeviceAction(sensor.getId(), action));
+                    deviceActionRequest.setScenarioName(scenarioEntity.getName());
+                    deviceActionRequest.setTimestamp(Instant.now());
+
+                    results.add(deviceActionRequest);
+                }
+            }
+
+        }
+        return results;
     }
 
     private boolean conditionMatch(ScenarioConditionLink cond, SensorsSnapshotAvro sensorsSnapshotAvro) {
 
-        String sensorID = cond.getSensor().getId();
-        ConditionEntity condition = cond.getCondition();
 
-        SensorStateAvro sensorStateAvro = sensorsSnapshotAvro.getSensorsState().get(sensorID);
+        String sensorId = cond.getSensor().getId();
+        ConditionEntity condition = cond.getCondition();
+        log.debug("ConditionMatch");
+        log.debug("SensorID: {}", sensorId);
+        log.debug("Condition: {}", condition);
+        log.debug("ScenarioConditionLink: {}", cond);
+
+
+
+        SensorStateAvro sensorStateAvro = sensorsSnapshotAvro.getSensorsState().get(sensorId);
+
+        if (sensorStateAvro == null) {
+            log.warn("Sensor state is missing in snapshot for sensorId: {}", sensorId);
+            return false;
+        }
 
         Object data = sensorStateAvro.getData();
 

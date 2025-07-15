@@ -2,6 +2,7 @@ package ru.practicum.service.handler;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.AvroMappingUtils;
 import ru.practicum.model.entity.*;
@@ -11,6 +12,7 @@ import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 import java.time.Instant;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ScenarioAddedEventHandler implements HubEventHandler<ScenarioAddedEventAvro> {
@@ -28,6 +30,11 @@ public class ScenarioAddedEventHandler implements HubEventHandler<ScenarioAddedE
         scenarioEntity.setHubId(hubId);
         scenarioEntity.setName(payload.getName());
 
+        log.info("Save ScenarioAddedEventAvro: {}", payload);
+        log.info("hubId: {}", hubId);
+        log.info("timestamp: {}", timestamp);
+
+
         List<ConditionEntity> conditionEntityList = payload.getConditions().stream()
                 .map(avroCondition -> ConditionEntity.builder()
                         .type(AvroMappingUtils.mapConditionType(avroCondition.getType()))
@@ -44,10 +51,24 @@ public class ScenarioAddedEventHandler implements HubEventHandler<ScenarioAddedE
 
         List<ScenarioConditionLink> conditionLinks = payload.getConditions().stream()
                 .map(avroCondition -> {
+
+                    String sensorId = avroCondition.getSensorId();
+                    SensorEntity sensor = SensorEntity.builder()
+                            .id(sensorId)
+                            .hubId(hubId)
+                            .build();
+
+                    ConditionEntity condition = conditionEntityList.get(payload.getConditions().indexOf(avroCondition));
+
                     return ScenarioConditionLink.builder()
+                            .id(new ScenarioConditionLink.ScenarioConditionId(
+                                    scenarioEntity.getId(),
+                                    sensor.getId(),
+                                    condition.getId()
+                            ))
                             .scenario(scenarioEntity)
-                            .sensor(SensorEntity.builder().id(avroCondition.getSensorId()).hubId(hubId).build())
-                            .condition(conditionEntityList.get(payload.getConditions().indexOf(avroCondition)))
+                            .sensor(sensor)
+                            .condition(condition)
                             .build();
                 })
                 .toList();
@@ -61,19 +82,38 @@ public class ScenarioAddedEventHandler implements HubEventHandler<ScenarioAddedE
 
         List<ScenarioActionLink> actionLinks = payload.getActions().stream()
                 .map(avroAction -> {
+                    String sensorId = avroAction.getSensorId();
+                    SensorEntity sensor = SensorEntity.builder()
+                            .id(sensorId)
+                            .hubId(hubId)
+                            .build();
                     ActionEntity actionEntity = actionEntityList.get(payload.getActions().indexOf(avroAction));
                     return ScenarioActionLink.builder()
+                            .id(new ScenarioActionLink.ScenarioActionId(
+                                    scenarioEntity.getId(),
+                                    sensor.getId(),
+                                    actionEntity.getId()
+                            ))
                             .scenario(scenarioEntity)
-                            .sensor(SensorEntity.builder().id(avroAction.getSensorId()).hubId(hubId).build()) // либо загрузить
+                            .sensor(sensor)
                             .action(actionEntity)
                             .build();
                 })
                 .toList();
 
+        log.info("Save entity: {}", scenarioEntity);
         scenarioRepository.save(scenarioEntity);
+
+        log.info("Save conditionList: {}", conditionEntityList);
         conditionRepository.saveAll(conditionEntityList);
+
+        log.info("Save action: {}", actionEntityList);
         actionRepository.saveAll(actionEntityList);
+
+        log.info("Save condition links: {}", conditionLinks);
         scenarioConditionLinkRepository.saveAll(conditionLinks);
+
+        log.info("Save action links: {}", actionLinks);
         scenarioActionLinkRepository.saveAll(actionLinks);
 
     }

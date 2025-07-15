@@ -14,6 +14,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
 public class ScenarioConditionLink {
 
     @EmbeddedId
