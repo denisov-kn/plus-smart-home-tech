@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
+@NoArgsConstructor
 public class DeviceAction {
     String sensorId;
     ActionType type;

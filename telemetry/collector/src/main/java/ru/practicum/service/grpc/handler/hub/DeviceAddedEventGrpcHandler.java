@@ -2,9 +2,9 @@ package ru.practicum.service.grpc.handler.hub;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.practicum.ProtoMappingUtils;
 import ru.practicum.model.hub.event.device.DeviceAddedEvent;
 import ru.practicum.service.kafka.KafkaService;
-import ru.practicum.utils.MappingUtils;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 
 import java.time.Instant;
@@ -30,7 +30,7 @@ public class DeviceAddedEventGrpcHandler implements HubEventGrpcHandler{
                         event.getTimestamp().getSeconds(),
                         event.getTimestamp().getNanos())
         );
-        deviceAddedEvent.setDeviceType(MappingUtils.mapDeviceType(
+        deviceAddedEvent.setDeviceType(ProtoMappingUtils.mapDeviceType(
                 event.getDeviceAdded().getType())
         );
 

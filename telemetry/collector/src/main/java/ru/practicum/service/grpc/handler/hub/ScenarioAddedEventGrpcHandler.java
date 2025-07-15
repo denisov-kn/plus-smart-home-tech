@@ -2,9 +2,9 @@ package ru.practicum.service.grpc.handler.hub;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.practicum.ProtoMappingUtils;
 import ru.practicum.model.hub.event.scenario.ScenarioAddedEvent;
 import ru.practicum.service.kafka.KafkaService;
-import ru.practicum.utils.MappingUtils;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 
 import java.time.Instant;
@@ -31,11 +31,11 @@ public class ScenarioAddedEventGrpcHandler implements HubEventGrpcHandler{
         );
         scenarioAddedEvent.setName(event.getScenarioAdded().getName());
         scenarioAddedEvent.setActions(event.getScenarioAdded().getActionsList().stream()
-                .map(MappingUtils::mapDeviceAction)
+                .map(ProtoMappingUtils::mapDeviceAction)
                 .toList()
         );
         scenarioAddedEvent.setConditions(event.getScenarioAdded().getConditionsList().stream()
-                .map(MappingUtils::mapScenarioCondition)
+                .map(ProtoMappingUtils::mapScenarioCondition)
                 .toList()
         );
 
