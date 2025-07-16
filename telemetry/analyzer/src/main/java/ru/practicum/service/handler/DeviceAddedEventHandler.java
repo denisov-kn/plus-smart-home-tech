@@ -1,7 +1,7 @@
 package ru.practicum.service.handler;
 
 import lombok.RequiredArgsConstructor;
-import ru.practicum.model.entity.SensorEntity;
+import ru.practicum.entity.SensorEntity;
 import org.springframework.stereotype.Component;
 import ru.practicum.repository.SensorRepository;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.AvroMappingUtils;
-import ru.practicum.model.entity.*;
+import ru.practicum.entity.*;
 import ru.practicum.repository.*;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 

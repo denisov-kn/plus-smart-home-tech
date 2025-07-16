@@ -2,10 +2,9 @@ package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.stereotype.Service;
 import ru.practicum.EntityMappingUtils;
-import ru.practicum.model.entity.*;
+import ru.practicum.entity.*;
 import ru.practicum.model.hub.event.scenario.DeviceAction;
 import ru.practicum.model.hubroute.DeviceActionRequest;
 import ru.practicum.repository.ScenarioActionLinkRepository;
@@ -16,7 +15,6 @@ import ru.yandex.practicum.kafka.telemetry.event.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service

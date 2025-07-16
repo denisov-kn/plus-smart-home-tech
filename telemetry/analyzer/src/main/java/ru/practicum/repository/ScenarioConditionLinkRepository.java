@@ -1,6 +1,6 @@
 package ru.practicum.repository;
 
-import ru.practicum.model.entity.ScenarioConditionLink;
+import ru.practicum.entity.ScenarioConditionLink;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

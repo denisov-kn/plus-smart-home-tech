@@ -1,33 +1,28 @@
-package ru.practicum.model.entity;
+package ru.practicum.entity;
+
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.model.hub.event.scenario.ConditionType;
-import ru.practicum.model.hub.event.scenario.OperationType;
+import ru.practicum.model.hub.event.scenario.ActionType;
 
 @Entity
-@Table(name = "conditions")
+@Table(name = "actions")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ToString
-public class ConditionEntity {
+public class ActionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    ConditionType type;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    OperationType operation;
+    ActionType type;
 
     @NotNull
     Integer value;

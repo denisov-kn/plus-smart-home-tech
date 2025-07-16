@@ -1,45 +1,33 @@
 package ru.practicum.service.kafka.handler.hub;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.ProtoMappingUtils;
-import ru.practicum.model.hub.event.HubEventType;
-import ru.practicum.model.hub.event.scenario.ScenarioAddedEvent;
-import ru.yandex.practicum.kafka.telemetry.event.DeviceActionAvro;
+import ru.practicum.utils.MappingUtils;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.ScenarioAddedEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
-import ru.yandex.practicum.kafka.telemetry.event.ScenarioConditionAvro;
-
-
-import java.util.List;
 
 @Component
-public class ScenarioAddedEventHandler implements HubEventHandler<ScenarioAddedEvent> {
+public class ScenarioAddedEventHandler implements HubEventHandler {
 
     @Override
-    public HubEventType getType() {
-        return HubEventType.SCENARIO_ADDED;
+    public boolean supports(HubEventProto proto) {
+        return proto.hasScenarioAdded();
     }
 
     @Override
-    public HubEventAvro handle(ScenarioAddedEvent event) {
-        List<ScenarioConditionAvro> conditions = event.getConditions().stream()
-                .map(ProtoMappingUtils::mapAvroScenarioCondition)
-                .toList();
-
-        List<DeviceActionAvro> actions = event.getActions().stream()
-                .map(ProtoMappingUtils::mapAvroDeviceAction)
-                .toList();
-
-        ScenarioAddedEventAvro payload = ScenarioAddedEventAvro.newBuilder()
-                .setName(event.getName())
-                .setConditions(conditions)
-                .setActions(actions)
-                .build();
+    public HubEventAvro handle(HubEventProto proto) {
+        ScenarioAddedEventProto event = proto.getScenarioAdded();
 
         return HubEventAvro.newBuilder()
-                .setHubId(event.getHubId())
-                .setTimestamp(event.getTimestamp())
-                .setPayload(payload)
+                .setHubId(proto.getHubId())
+                .setTimestamp(MappingUtils.toInstant(proto.getTimestamp()))
+                .setPayload(ScenarioAddedEventAvro.newBuilder()
+                        .setName(event.getName())
+                        .setConditions(MappingUtils.mapConditions(event.getConditionsList()))
+                        .setActions(MappingUtils.mapActions(event.getActionsList()))
+                        .build())
                 .build();
     }
+
 }

@@ -1,7 +1,7 @@
 package ru.practicum.repository;
 
 
-import ru.practicum.model.entity.SensorEntity;
+import ru.practicum.entity.SensorEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
