@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.model.hub.event.scenario.ConditionType;
-import ru.practicum.model.hub.event.scenario.OperationType;
+import ru.yandex.practicum.kafka.telemetry.event.ConditionOperationAvro;
+import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 
 @Entity
 @Table(name = "conditions")
@@ -23,11 +23,11 @@ public class ConditionEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    ConditionType type;
+    ConditionTypeAvro type;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    OperationType operation;
+    ConditionOperationAvro operation;
 
     @NotNull
     Integer value;

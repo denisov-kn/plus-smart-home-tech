@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.practicum.model.hubroute.DeviceActionRequest;
-import ru.yandex.practicum.grpc.telemetry.hubrouter.HubRouterControllerGrpc.HubRouterControllerBlockingStub;
+import ru.yandex.practicum.grpc.telemetry.event.DeviceActionRequestProto;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
 import java.time.Duration;
@@ -57,7 +56,7 @@ public class SnapshotProcessor {
                         continue;
                     }
 
-                    List<DeviceActionRequest> deviceActionRequests =  evaluator.evaluate(sensorsSnapshotAvro);
+                    List<DeviceActionRequestProto> deviceActionRequests =  evaluator.evaluate(sensorsSnapshotAvro);
 
                     log.info("Analyzer send deviceActionRequests {} ", deviceActionRequests);
 

@@ -16,9 +16,7 @@
         <module>serialization</module>
         <module>collector</module>
         <module>aggregator</module>
-        <module>common-models</module>
         <module>analyzer</module>
-        <module>common-mapping</module>
     </modules>
 
 </project>

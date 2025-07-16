@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.practicum.AvroMappingUtils;
 import ru.practicum.entity.*;
 import ru.practicum.repository.*;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
@@ -37,7 +36,7 @@ public class ScenarioAddedEventHandler implements HubEventHandler<ScenarioAddedE
 
         List<ConditionEntity> conditionEntityList = payload.getConditions().stream()
                 .map(avroCondition -> ConditionEntity.builder()
-                        .type(AvroMappingUtils.mapConditionType(avroCondition.getType()))
+                        .type(avroCondition.getType())
                         .value(switch (avroCondition.getValue()) {
                             case null -> null;
                             case Integer intValue -> intValue;
@@ -45,7 +44,7 @@ public class ScenarioAddedEventHandler implements HubEventHandler<ScenarioAddedE
                             default -> throw new IllegalArgumentException(
                                     "Unsupported value type: " + avroCondition.getValue().getClass());
                         })
-                        .operation(AvroMappingUtils.mapOperationType(avroCondition.getOperation()))
+                        .operation(avroCondition.getOperation())
                         .build())
                 .toList();
 
@@ -75,7 +74,7 @@ public class ScenarioAddedEventHandler implements HubEventHandler<ScenarioAddedE
 
         List<ActionEntity> actionEntityList = payload.getActions().stream()
                 .map(avroAction -> ActionEntity.builder()
-                        .type(AvroMappingUtils.mapActionType(avroAction.getType()))
+                        .type(avroAction.getType())
                         .value(avroAction.getValue())
                                 .build())
                 .toList();

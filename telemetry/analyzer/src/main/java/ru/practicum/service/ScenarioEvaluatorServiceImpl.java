@@ -3,13 +3,12 @@ package ru.practicum.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.EntityMappingUtils;
 import ru.practicum.entity.*;
-import ru.practicum.model.hub.event.scenario.DeviceAction;
-import ru.practicum.model.hubroute.DeviceActionRequest;
 import ru.practicum.repository.ScenarioActionLinkRepository;
 import ru.practicum.repository.ScenarioConditionLinkRepository;
 import ru.practicum.repository.ScenarioRepository;
+import ru.practicum.utils.MappingUtils;
+import ru.yandex.practicum.grpc.telemetry.event.DeviceActionRequestProto;
 import ru.yandex.practicum.kafka.telemetry.event.*;
 
 import java.time.Instant;
@@ -26,13 +25,13 @@ public class ScenarioEvaluatorServiceImpl implements ScenarioEvaluatorService {
     private final ScenarioActionLinkRepository scenarioActionLinkRepository;
 
     @Override
-    public List<DeviceActionRequest> evaluate(SensorsSnapshotAvro sensorsSnapshotAvro) {
+    public List<DeviceActionRequestProto> evaluate(SensorsSnapshotAvro sensorsSnapshotAvro) {
 
         log.info("Analyzer:ScenarioEvaluatorService - sensorsSnapshotAvro: {}", sensorsSnapshotAvro);
 
 
         List<ScenarioEntity> scenarioEntities = scenarioRepository.findByHubId(sensorsSnapshotAvro.getHubId());
-        List<DeviceActionRequest> results = new ArrayList<>();
+        List<DeviceActionRequestProto> results = new ArrayList<>();
 
 
         for (ScenarioEntity scenarioEntity : scenarioEntities) {
@@ -47,11 +46,12 @@ public class ScenarioEvaluatorServiceImpl implements ScenarioEvaluatorService {
                 for (ScenarioActionLink actionLink : actions) {
                     ActionEntity action = actionLink.getAction();
                     SensorEntity sensor = actionLink.getSensor();
-                    DeviceActionRequest deviceActionRequest = new DeviceActionRequest();
-                    deviceActionRequest.setHubId(sensorsSnapshotAvro.getHubId());
-                    deviceActionRequest.setAction(EntityMappingUtils.mapDeviceAction(sensor.getId(), action));
-                    deviceActionRequest.setScenarioName(scenarioEntity.getName());
-                    deviceActionRequest.setTimestamp(Instant.now());
+                    DeviceActionRequestProto deviceActionRequest = DeviceActionRequestProto.newBuilder()
+                            .setHubId(sensorsSnapshotAvro.getHubId())
+                            .setAction(MappingUtils.mapDeviceAction(sensor.getId(), action))
+                            .setScenarioName(scenarioEntity.getName())
+                            .setTimestamp(MappingUtils.mapFromInstant(Instant.now()))
+                            .build();
 
                     results.add(deviceActionRequest);
                 }

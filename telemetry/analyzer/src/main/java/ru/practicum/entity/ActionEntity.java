@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.model.hub.event.scenario.ActionType;
+import ru.yandex.practicum.kafka.telemetry.event.ActionTypeAvro;
 
 @Entity
 @Table(name = "actions")
@@ -22,7 +22,7 @@ public class ActionEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    ActionType type;
+    ActionTypeAvro type;
 
     @NotNull
     Integer value;
