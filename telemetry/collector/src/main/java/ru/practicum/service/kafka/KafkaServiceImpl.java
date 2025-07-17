@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Service;
-import ru.practicum.model.hub.event.HubEvent;
-import ru.practicum.model.sensor.SensorEvent;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.beans.factory.annotation.Value;
 import ru.practicum.service.kafka.handler.hub.HubEventHandlerRegistry;
 import ru.practicum.service.kafka.handler.sensor.SensorEventRegistry;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 
@@ -31,16 +31,16 @@ public class KafkaServiceImpl implements KafkaService {
     private String hubTopic;
 
     @Override
-    public void kafkaSensorEvent(SensorEvent sensorEvent) {
-        log.info("Sensor event received: {}", sensorEvent);
+    public void kafkaSensorEvent(SensorEventProto sensorEvent) {
+        log.info("Sensor proto event received: {}", sensorEvent);
         SensorEventAvro avro = sensorRegistry.handle(sensorEvent);
         log.info("Avro sensor event: {}", avro);
         producer.send(new ProducerRecord<>(sensorTopic, avro));
     }
 
     @Override
-    public void kafkaHubEvent(HubEvent hubEvent) {
-        log.info("Hub event received: {}", hubEvent);
+    public void kafkaHubEvent(HubEventProto hubEvent) {
+        log.info("Hub event proto received: {}", hubEvent);
         HubEventAvro avro = hubRegistry.handle(hubEvent);
         log.info("Avro hub event: {}", avro);
         producer.send(new ProducerRecord<>(hubTopic, avro));

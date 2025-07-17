@@ -1,10 +1,11 @@
 package ru.practicum.service.kafka;
 
-import ru.practicum.model.hub.event.HubEvent;
-import ru.practicum.model.sensor.SensorEvent;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
+
 
 public interface KafkaService {
-    void kafkaSensorEvent(SensorEvent sensorEvent);
-    void kafkaHubEvent(HubEvent hubEvent);
+    void kafkaSensorEvent(SensorEventProto sensorEvent);
+    void kafkaHubEvent(HubEventProto hubEvent);
 
 }

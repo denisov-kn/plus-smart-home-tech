@@ -1,30 +1,32 @@
 package ru.practicum.service.kafka.handler.sensor;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.model.sensor.MotionSensorEvent;
-import ru.practicum.model.sensor.SensorEventType;
+import ru.practicum.utils.MappingUtils;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.MotionSensorAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 
 @Component
-public class MotionSensorEventHandler implements SensorEventHandler<MotionSensorEvent> {
+public class MotionSensorEventHandler implements SensorEventHandler{
 
     @Override
-    public SensorEventAvro handle(MotionSensorEvent event) {
+    public boolean supports(SensorEventProto proto) {
+        return proto.hasMotionSensorEvent();
+    }
+
+    @Override
+    public SensorEventAvro handle(SensorEventProto proto) {
         return SensorEventAvro.newBuilder()
-                .setId(event.getId())
-                .setHubId(event.getHubId())
-                .setTimestamp(event.getTimestamp())
+                .setId(proto.getId())
+                .setHubId(proto.getHubId())
+                .setTimestamp(MappingUtils.toInstant(proto.getTimestamp()))
                 .setPayload(MotionSensorAvro.newBuilder()
-                        .setLinkQuality(event.getLinkQuality())
-                        .setMotion(event.getMotion())
-                        .setVoltage(event.getVoltage())
+                        .setLinkQuality(proto.getMotionSensorEvent().getLinkQuality())
+                        .setMotion(proto.getMotionSensorEvent().getMotion())
+                        .setVoltage(proto.getMotionSensorEvent().getVoltage())
                         .build())
                 .build();
     }
 
-    @Override
-    public SensorEventType getType() {
-        return SensorEventType.MOTION_SENSOR_EVENT;
-    }
+
 }

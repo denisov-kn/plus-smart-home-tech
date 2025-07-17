@@ -1,142 +1,92 @@
 package ru.practicum.utils;
 
-
-import ru.practicum.model.hub.event.device.DeviceType;
-import ru.practicum.model.hub.event.scenario.*;
 import ru.yandex.practicum.grpc.telemetry.event.*;
 import ru.yandex.practicum.kafka.telemetry.event.*;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MappingUtils {
-
-    public static DeviceTypeAvro mapAvroDeviceType(DeviceType type) {
-        return switch (type) {
+    public static DeviceTypeAvro map(DeviceTypeProto proto) {
+        return switch (proto) {
             case MOTION_SENSOR -> DeviceTypeAvro.MOTION_SENSOR;
             case TEMPERATURE_SENSOR -> DeviceTypeAvro.TEMPERATURE_SENSOR;
             case LIGHT_SENSOR -> DeviceTypeAvro.LIGHT_SENSOR;
             case CLIMATE_SENSOR -> DeviceTypeAvro.CLIMATE_SENSOR;
             case SWITCH_SENSOR -> DeviceTypeAvro.SWITCH_SENSOR;
+            case UNRECOGNIZED -> throw new IllegalArgumentException("Unknown DeviceTypeProto: " + proto);
         };
     }
 
-    public static ConditionTypeAvro mapAvroConditionType(ConditionType type) {
-        return switch (type) {
+    public static ConditionTypeAvro map(ConditionTypeProto proto) {
+        return switch (proto) {
             case MOTION -> ConditionTypeAvro.MOTION;
             case LUMINOSITY -> ConditionTypeAvro.LUMINOSITY;
             case SWITCH -> ConditionTypeAvro.SWITCH;
             case TEMPERATURE -> ConditionTypeAvro.TEMPERATURE;
             case CO2LEVEL -> ConditionTypeAvro.CO2LEVEL;
             case HUMIDITY -> ConditionTypeAvro.HUMIDITY;
+            case UNRECOGNIZED -> throw new IllegalArgumentException("Unknown ConditionTypeProto: " + proto);
         };
     }
 
-    public static ConditionOperationAvro mapAvroOperationType(OperationType op) {
-        return switch (op) {
+    public static ConditionOperationAvro map(ConditionOperationProto proto) {
+        return switch (proto) {
             case EQUALS -> ConditionOperationAvro.EQUALS;
             case GREATER_THAN -> ConditionOperationAvro.GREATER_THAN;
             case LOWER_THAN -> ConditionOperationAvro.LOWER_THAN;
+            case UNRECOGNIZED -> throw new IllegalArgumentException("Unknown ConditionOperationProto: " + proto);
         };
     }
 
-    public static ActionTypeAvro mapAvroActionType(ActionType type) {
-        return switch (type) {
+    public static ActionTypeAvro map(ActionTypeProto proto) {
+        return switch (proto) {
             case ACTIVATE -> ActionTypeAvro.ACTIVATE;
             case DEACTIVATE -> ActionTypeAvro.DEACTIVATE;
             case INVERSE -> ActionTypeAvro.INVERSE;
             case SET_VALUE -> ActionTypeAvro.SET_VALUE;
+            case UNRECOGNIZED -> throw new IllegalArgumentException("Unknown ActionTypeProto: " + proto);
         };
     }
 
-    public static ScenarioConditionAvro mapAvroScenarioCondition(ScenarioCondition condition) {
-        return ScenarioConditionAvro.newBuilder()
-                .setSensorId(condition.getSensorId())
-                .setType(mapAvroConditionType(condition.getType()))
-                .setOperation(mapAvroOperationType(condition.getOperation()))
-                .setValue(condition.getValue())
-                .build();
+    public static Instant toInstant(com.google.protobuf.Timestamp timestamp) {
+        return Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
     }
 
-    public static DeviceActionAvro mapAvroDeviceAction(DeviceAction action) {
-        return DeviceActionAvro.newBuilder()
-                .setSensorId(action.getSensorId())
-                .setType(mapAvroActionType(action.getType()))
-                .setValue(action.getValue())
-                .build();
-    }
-
-    public static DeviceType mapDeviceType(DeviceTypeProto proto) {
-        return switch (proto) {
-            case MOTION_SENSOR -> DeviceType.MOTION_SENSOR;
-            case TEMPERATURE_SENSOR -> DeviceType.TEMPERATURE_SENSOR;
-            case LIGHT_SENSOR -> DeviceType.LIGHT_SENSOR;
-            case CLIMATE_SENSOR -> DeviceType.CLIMATE_SENSOR;
-            case SWITCH_SENSOR -> DeviceType.SWITCH_SENSOR;
-            case UNRECOGNIZED -> throw new IllegalArgumentException("Unknown device type: " + proto);
-        };
-    }
-
-    public static ConditionType mapConditionType(ConditionTypeProto proto) {
-        return switch (proto) {
-            case MOTION -> ConditionType.MOTION;
-            case LUMINOSITY -> ConditionType.LUMINOSITY;
-            case SWITCH -> ConditionType.SWITCH;
-            case TEMPERATURE -> ConditionType.TEMPERATURE;
-            case CO2LEVEL -> ConditionType.CO2LEVEL;
-            case HUMIDITY -> ConditionType.HUMIDITY;
-            case UNRECOGNIZED -> throw new IllegalArgumentException("Unknown condition type: " + proto);
-        };
-    }
-
-    public static OperationType mapOperationType(ConditionOperationProto proto) {
-        return switch (proto) {
-            case EQUALS -> OperationType.EQUALS;
-            case GREATER_THAN -> OperationType.GREATER_THAN;
-            case LOWER_THAN -> OperationType.LOWER_THAN;
-            case UNRECOGNIZED -> throw new IllegalArgumentException("Unknown operation: " + proto);
-        };
-    }
-
-    public static ActionType mapActionType(ActionTypeProto proto) {
-        return switch (proto) {
-            case ACTIVATE -> ActionType.ACTIVATE;
-            case DEACTIVATE -> ActionType.DEACTIVATE;
-            case INVERSE -> ActionType.INVERSE;
-            case SET_VALUE -> ActionType.SET_VALUE;
-            case UNRECOGNIZED -> throw new IllegalArgumentException("Unknown action type: " + proto);
-        };
-    }
-
-    public static ScenarioCondition mapScenarioCondition(ScenarioConditionProto proto) {
-
-        Integer intValue = null;
-        Boolean booleanValue = null;
+    public static ScenarioConditionAvro map(ScenarioConditionProto proto) {
+        ScenarioConditionAvro.Builder builder = ScenarioConditionAvro.newBuilder()
+                .setSensorId(proto.getSensorId())
+                .setType(map(proto.getType()))
+                .setOperation(map(proto.getOperation()));
 
         switch (proto.getValueCase()) {
-            case BOOL_VALUE:
-                booleanValue = proto.getBoolValue();
-                break;
-            case INT_VALUE:
-                intValue = proto.getIntValue();
-                break;
-            case VALUE_NOT_SET:
-            default:
+            case BOOL_VALUE -> builder.setValue(proto.getBoolValue());
+            case INT_VALUE -> builder.setValue(proto.getIntValue());
+            case VALUE_NOT_SET -> builder.setValue(null);
         }
 
-        return new ScenarioCondition(
-                proto.getSensorId(),
-                mapConditionType(proto.getType()),
-                mapOperationType(proto.getOperation()),
-                intValue,
-                booleanValue
-        );
+        return builder.build();
     }
 
-    public static DeviceAction mapDeviceAction(DeviceActionProto proto) {
-        return new DeviceAction(
-                proto.getSensorId(),
-                mapActionType(proto.getType()),
-                proto.getValue()
-        );
+    public static DeviceActionAvro map(DeviceActionProto proto) {
+        DeviceActionAvro.Builder builder = DeviceActionAvro.newBuilder()
+                .setSensorId(proto.getSensorId())
+                .setType(map(proto.getType()));
+
+        if (proto.hasValue()) {
+            builder.setValue(proto.getValue());
+        }
+
+        return builder.build();
     }
 
+
+    public static List<ScenarioConditionAvro> mapConditions(List<ScenarioConditionProto> conditions) {
+        return conditions.stream().map(MappingUtils::map).collect(Collectors.toList());
+    }
+
+    public static List<DeviceActionAvro> mapActions(List<DeviceActionProto> actions) {
+        return actions.stream().map(MappingUtils::map).collect(Collectors.toList());
+    }
 }

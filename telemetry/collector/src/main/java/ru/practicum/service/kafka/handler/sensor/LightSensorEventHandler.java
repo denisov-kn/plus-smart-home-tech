@@ -1,29 +1,32 @@
 package ru.practicum.service.kafka.handler.sensor;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.model.sensor.LightSensorEvent;
-import ru.practicum.model.sensor.SensorEventType;
+import ru.practicum.utils.MappingUtils;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.LightSensorAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 
+
 @Component
-public class LightSensorEventHandler implements SensorEventHandler<LightSensorEvent> {
+public class LightSensorEventHandler implements SensorEventHandler {
 
     @Override
-    public SensorEventAvro handle(LightSensorEvent event) {
+    public boolean supports(SensorEventProto proto) {
+        return proto.hasLightSensorEvent();
+    }
+
+    @Override
+    public SensorEventAvro handle(SensorEventProto proto) {
         return SensorEventAvro.newBuilder()
-                .setId(event.getId())
-                .setHubId(event.getHubId())
-                .setTimestamp(event.getTimestamp())
+                .setId(proto.getId())
+                .setHubId(proto.getHubId())
+                .setTimestamp(MappingUtils.toInstant(proto.getTimestamp()))
                 .setPayload(LightSensorAvro.newBuilder()
-                        .setLinkQuality(event.getLinkQuality())
-                        .setLuminosity(event.getLuminosity())
+                        .setLinkQuality(proto.getLightSensorEvent().getLinkQuality())
+                        .setLuminosity(proto.getLightSensorEvent().getLuminosity())
                         .build())
                 .build();
     }
 
-    @Override
-    public SensorEventType getType() {
-        return SensorEventType.LIGHT_SENSOR_EVENT;
-    }
+
 }

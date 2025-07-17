@@ -1,10 +1,8 @@
 package ru.practicum.service.kafka.handler.hub;
-
-import ru.practicum.model.hub.event.HubEvent;
-import ru.practicum.model.hub.event.HubEventType;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 
-public interface HubEventHandler <T extends HubEvent>{
-    HubEventAvro handle(T event);
-    HubEventType getType();
+public interface HubEventHandler {
+    boolean supports(HubEventProto proto);
+    HubEventAvro handle(HubEventProto proto);
 }

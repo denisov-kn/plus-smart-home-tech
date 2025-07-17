@@ -60,7 +60,7 @@ public class AggregationStarter {
                     updated.ifPresent(snapshot -> {
                         try {
                             producer.send(new ProducerRecord<>(snapshotTopic, snapshot));
-                            log.info("Updated snapshot for hub {} sent", snapshot.getHubId());
+                            log.info("Updated snapshot for hub {} sent {}", snapshot.getHubId(), snapshot);
                         } catch (Exception e) {
                             log.error("Failed to send snapshot to Kafka", e);
                         }
