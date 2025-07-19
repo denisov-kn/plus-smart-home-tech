@@ -41,7 +41,7 @@ public class AggregationStarter {
      */
     public void start() {
         try {
-
+            Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
             log.info("Aggregator subscribed to topic: {}", sensorTopic);
             consumer.subscribe(List.of(sensorTopic));
 

@@ -34,6 +34,7 @@ public class HubEventProcessor implements Runnable {
 
         try {
 
+            Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
             log.info("Analyzer(HubEventProcessor) subscribed to topic: {}", topic);
             consumer.subscribe(List.of(topic));
 
