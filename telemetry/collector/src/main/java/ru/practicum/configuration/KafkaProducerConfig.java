@@ -7,7 +7,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.practicum.sevice.EventSerializer;
+import ru.practicum.kafka.serialazer.GeneralSerializer;
 
 import java.util.Properties;
 
@@ -22,7 +22,7 @@ public class KafkaProducerConfig {
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, EventSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GeneralSerializer.class);
 
         return new KafkaProducer<>(props);
     }
