@@ -17,7 +17,7 @@ public class KafkaConsumerSnapshotConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value("@{spring.kafka.consumer.snapshot.group-id}")
+    @Value("${spring.kafka.consumer.snapshot.group-id}")
     private String groupId;
 
     @Bean

@@ -1,0 +1,46 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      hub:
+        group-id: analyzer-consumer-hub-group
+      snapshot:
+        group-id: analyzer-consumer-snapshot-group
+
+  sql:
+    init:
+      mode: always
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          time_zone: Europe/Moscow
+        show_sql: false
+        type:
+          descriptor:
+            sql:
+              BasicBinder: OFF
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://analyzer-db:5432/postgres
+    username: postgres
+    password: postgres
+
+kafka:
+  topics:
+    sensor-snapshot: telemetry.snapshots.v1
+    hub-event: telemetry.hubs.v1
+
+grpc:
+  client:
+    hub-router:
+      address: static://localhost:59090
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
