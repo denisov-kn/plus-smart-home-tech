@@ -34,6 +34,8 @@
         <spring-cloud-starter-openfeign-dependencies.version>4.3.0</spring-cloud-starter-openfeign-dependencies.version>
         <spring-retry-dependencies.version>2.0.12</spring-retry-dependencies.version>
         <spring-boot-starter-web-dependencies.version>3.5.4</spring-boot-starter-web-dependencies.version>
+        <jakarta-persistence-dependencies.version>3.1.0</jakarta-persistence-dependencies.version>
+        <spring-boot-starter-validation-dependencies.version>3.5.4</spring-boot-starter-validation-dependencies.version>
 
         <!--       Plugins       -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -114,6 +116,16 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring-boot-starter-web-dependencies.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
+                <version>${jakarta-persistence-dependencies.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-validation</artifactId>
+                <version>${spring-boot-starter-validation-dependencies.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

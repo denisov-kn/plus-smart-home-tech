@@ -1,9 +1,6 @@
 package ru.practicum.dto.shoppingStore;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
@@ -17,6 +14,7 @@ public class ProductListDto {
     List<SortDto> sort;
 
     @Data
+    @AllArgsConstructor
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class SortDto {
         String direction;
