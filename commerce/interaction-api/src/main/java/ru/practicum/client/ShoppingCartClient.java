@@ -2,6 +2,7 @@ package ru.practicum.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.dto.shoppingCart.ChangeProductQuantityRequest;
 import ru.practicum.dto.shoppingCart.ShoppingCartDto;
 import ru.practicum.dto.shoppingStore.SetProductQuantityStateRequest;
 
@@ -28,7 +29,7 @@ public interface ShoppingCartClient {
 
     @PostMapping ("/change-quantity")
     ShoppingCartDto changeQuantityShoppingCart(@RequestParam String username,
-                                               @RequestBody SetProductQuantityStateRequest setProductQuantityStateRequest
+                                               @RequestBody ChangeProductQuantityRequest request
     );
 
 

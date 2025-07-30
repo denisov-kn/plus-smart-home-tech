@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UuidGenerator;
 import ru.practicum.dto.shoppingStore.enums.ProductCategory;
 import ru.practicum.dto.shoppingStore.enums.ProductState;

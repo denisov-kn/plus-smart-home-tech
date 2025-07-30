@@ -12,6 +12,7 @@ import ru.practicum.dto.shoppingStore.ProductDto;
 import ru.practicum.dto.shoppingStore.ProductListDto;
 import ru.practicum.dto.shoppingStore.SetProductQuantityStateRequest;
 import ru.practicum.dto.shoppingStore.enums.ProductCategory;
+import ru.practicum.dto.shoppingStore.enums.ProductState;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.model.Product;
 import ru.practicum.utils.Mapper;
@@ -68,8 +69,10 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     public void removeProductFromStore(String productId) {
-        findProductById(UUID.fromString(productId));
-        shoppingStoreRepository.deleteById(UUID.fromString(productId));
+        UUID uuid = UUID.fromString(productId);
+        Product product = findProductById(uuid);
+        product.setProductState(ProductState.DEACTIVATE);
+        shoppingStoreRepository.save(product);
     }
 
     @Override
