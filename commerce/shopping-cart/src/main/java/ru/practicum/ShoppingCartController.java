@@ -1,6 +1,7 @@
 package ru.practicum;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.client.ShoppingCartClient;
 import ru.practicum.dto.shoppingCart.ChangeProductQuantityRequest;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/v1/shopping-cart")
 @RequiredArgsConstructor
 public class ShoppingCartController implements ShoppingCartClient {
 

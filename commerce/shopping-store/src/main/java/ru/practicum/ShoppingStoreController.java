@@ -1,22 +1,24 @@
 package ru.practicum;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.client.ShoppingStoreClient;
 import ru.practicum.dto.shoppingStore.ProductDto;
 import ru.practicum.dto.shoppingStore.ProductListDto;
 import ru.practicum.dto.shoppingStore.SetProductQuantityStateRequest;
+import ru.practicum.dto.shoppingStore.enums.QuantityState;
 import ru.practicum.service.ShoppingStoreService;
 
 @RestController
+@RequestMapping("/api/v1/shopping-store")
 @RequiredArgsConstructor
 public class ShoppingStoreController implements ShoppingStoreClient {
 
     private final ShoppingStoreService shoppingStoreService;
 
     @Override
-    @ResponseStatus
     public ProductListDto getProducts(String category, Integer page, Integer size, String sort, String direction) {
         return shoppingStoreService.getProducts(category, page, size, sort, direction);
     }
@@ -33,12 +35,13 @@ public class ShoppingStoreController implements ShoppingStoreClient {
 
     @Override
     public void removeProductFromStore(String productId) {
+        productId = productId.replaceAll("\"", "").trim();
         shoppingStoreService.removeProductFromStore(productId);
     }
 
     @Override
-    public void quantityState(SetProductQuantityStateRequest setProductQuantityStateRequest) {
-        shoppingStoreService.quantityState(setProductQuantityStateRequest);
+    public void quantityState(String productId, QuantityState quantityState) {
+        shoppingStoreService.quantityState(productId, quantityState);
     }
 
     @Override

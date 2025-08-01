@@ -21,6 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
 public class Cart {
     @Id
     @GeneratedValue

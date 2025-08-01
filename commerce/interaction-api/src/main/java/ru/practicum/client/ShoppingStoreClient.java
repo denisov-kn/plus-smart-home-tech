@@ -5,8 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.shoppingStore.ProductDto;
 import ru.practicum.dto.shoppingStore.ProductListDto;
 import ru.practicum.dto.shoppingStore.SetProductQuantityStateRequest;
+import ru.practicum.dto.shoppingStore.enums.QuantityState;
 
-@FeignClient(name = "shopping-store-service", path = "/api/v1/shopping-store")
+@FeignClient(name = "shopping-store", path = "/api/v1/shopping-store")
 public interface ShoppingStoreClient {
     @GetMapping
     ProductListDto getProducts(@RequestParam String category,
@@ -19,15 +20,17 @@ public interface ShoppingStoreClient {
     @GetMapping("/{id}")
     ProductDto getProduct(@PathVariable String id);
 
-    @PostMapping
+    @PutMapping
     ProductDto createProduct(@RequestBody ProductDto productDto);
 
     @PostMapping("/removeProductFromStore")
     void removeProductFromStore(@RequestBody String productId);
 
     @PostMapping("/quantityState")
-    void quantityState(@RequestBody SetProductQuantityStateRequest setProductQuantityStateRequest);
+    void quantityState(@RequestParam (required = true) String productId,
+                       @RequestParam (required = true) QuantityState quantityState
+                       );
 
-    @PutMapping
+    @PostMapping
     ProductDto updateProduct(@RequestBody ProductDto productDto);
 }

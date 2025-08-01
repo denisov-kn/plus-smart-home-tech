@@ -27,7 +27,6 @@ public class Mapper {
     public static List<CartProduct> toCartProduct(Cart cart, Map<String, Integer> products) {
         return products.entrySet().stream()
                 .map(entry -> CartProduct.builder()
-                        .id(new CartProduct.CartProductId(cart.getId(), UUID.fromString(entry.getKey())))
                         .cart(cart)
                         .productId(UUID.fromString(entry.getKey()))
                         .quantity(entry.getValue())

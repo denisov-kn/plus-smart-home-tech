@@ -16,26 +16,16 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString(exclude = "cart")
 public class CartProduct {
-    @EmbeddedId
-    CartProductId id;
+    @Id
+    @GeneratedValue
+    UUID id;
 
     @ManyToOne
-    @MapsId("cartId")
+    @JoinColumn(name = "cart_id", nullable = false)
     Cart cart;
 
     UUID productId;
     Integer quantity;
-
-    @Embeddable
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class CartProductId implements Serializable {
-        UUID cartId;
-        UUID productId;
-    }
 }

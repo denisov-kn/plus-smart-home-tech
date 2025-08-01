@@ -5,9 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import ru.practicum.ShoppingStore;
-import ru.practicum.ShoppingStoreRepository;
+import ru.practicum.dto.shoppingStore.enums.QuantityState;
+import ru.practicum.repository.ShoppingStoreRepository;
 import ru.practicum.dto.shoppingStore.ProductDto;
 import ru.practicum.dto.shoppingStore.ProductListDto;
 import ru.practicum.dto.shoppingStore.SetProductQuantityStateRequest;
@@ -15,6 +16,8 @@ import ru.practicum.dto.shoppingStore.enums.ProductCategory;
 import ru.practicum.dto.shoppingStore.enums.ProductState;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.model.Product;
+import ru.practicum.repository.ProductFilter;
+import ru.practicum.repository.ProductSpecifications;
 import ru.practicum.utils.Mapper;
 
 import java.util.List;
@@ -28,27 +31,32 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     public ProductListDto getProducts(String category, Integer page, Integer size, String sort, String direction) {
+
+        ProductFilter filter = new ProductFilter();
+        filter.setCategory(category);
+        filter.setPage(page);
+        filter.setSize(size);
+        filter.setSort(sort);
+        filter.setDirection(direction);
+
+        // Используем Specification
+        Specification<Product> spec = ProductSpecifications.withFilter(filter);
+
+
         Pageable pageable = PageRequest.of(
-                page != null ? page : 0,
-                size != null ? size : 10,
-                Sort.by(Sort.Direction.fromString(direction != null ? direction : "ASC"),
-                        sort != null ? sort : "name")
+                filter.getPage(),
+                filter.getSize(),
+                Sort.by(Sort.Direction.fromString(filter.getDirection()), filter.getSort())
         );
 
-        Page<Product> productPage;
+        Page<Product> productPage = shoppingStoreRepository.findAll(spec, pageable);
 
-        if (category != null) {
-            ProductCategory categoryEnum = ProductCategory.valueOf(category.toUpperCase());
-            productPage = shoppingStoreRepository.findByProductCategory(categoryEnum, pageable);
-        } else {
-            productPage = shoppingStoreRepository.findAll(pageable);
-        }
 
         List<ProductDto> content = productPage.getContent().stream()
                 .map(Mapper::toDto)
                 .toList();
 
-        ProductListDto.SortDto sortDto = new ProductListDto.SortDto(direction, sort);
+        ProductListDto.SortDto sortDto = new ProductListDto.SortDto(filter.getDirection(), filter.getSort());
 
         return new ProductListDto(content, List.of(sortDto));
 
@@ -76,10 +84,10 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
-    public void quantityState(SetProductQuantityStateRequest request) {
-        UUID uuid = UUID.fromString(request.getProductId());
+    public void quantityState(String productId, QuantityState quantityState) {
+        UUID uuid = UUID.fromString(productId);
         Product product = findProductById(uuid);
-        product.setQuantityState(request.getQuantityState());
+        product.setQuantityState(quantityState);
         shoppingStoreRepository.save(product);
     }
 

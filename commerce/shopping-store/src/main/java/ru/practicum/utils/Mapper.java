@@ -7,30 +7,32 @@ public class Mapper {
     public static ProductDto toDto(Product product) {
         return ProductDto.builder()
                 .productId(product.getId().toString())
-                .productName(product.getName())
+                .productName(product.getProductName())
                 .description(product.getDescription())
                 .imageSrc(product.getImageSrc())
                 .quantityState(product.getQuantityState())
                 .productState(product.getProductState())
                 .productCategory(product.getProductCategory())
+                .price(product.getPrice())
                 .build();
     }
 
     public static Product toEntity(ProductDto productDto) {
         return Product.builder()
-                .name(productDto.getProductName())
+                .productName(productDto.getProductName())
                 .description(productDto.getDescription())
                 .imageSrc(productDto.getImageSrc())
                 .quantityState(productDto.getQuantityState())
                 .productState(productDto.getProductState())
                 .productCategory(productDto.getProductCategory())
+                .price(productDto.getPrice())
                 .build();
     }
 
     public static void updateProductFromDto(ProductDto dto, Product product) {
 
         if (dto.getProductName() != null) {
-            product.setName(dto.getProductName());
+            product.setProductName(dto.getProductName());
         }
         if (dto.getDescription() != null) {
             product.setDescription(dto.getDescription());

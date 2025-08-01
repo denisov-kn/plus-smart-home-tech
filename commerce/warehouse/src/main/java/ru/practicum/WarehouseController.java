@@ -1,6 +1,7 @@
 package ru.practicum;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.client.WarehouseClient;
 import ru.practicum.dto.shoppingCart.ShoppingCartDto;
@@ -11,6 +12,7 @@ import ru.practicum.dto.warehouse.NewProductInWarehouseRequest;
 import ru.practicum.service.WarehouseService;
 
 @RestController
+@RequestMapping("/api/v1/warehouse")
 @RequiredArgsConstructor
 public class WarehouseController implements WarehouseClient {
 

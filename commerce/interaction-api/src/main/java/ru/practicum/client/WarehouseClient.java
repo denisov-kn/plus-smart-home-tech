@@ -11,7 +11,7 @@ import ru.practicum.dto.warehouse.AddressDto;
 import ru.practicum.dto.warehouse.BookedProductsDto;
 import ru.practicum.dto.warehouse.NewProductInWarehouseRequest;
 
-@FeignClient(name = "warehouse-service", path = "/api/v1/warehouse")
+@FeignClient(name = "warehouse", path = "/api/v1/warehouse")
 public interface WarehouseClient {
     @PutMapping
     void addNewProduct(@RequestBody NewProductInWarehouseRequest request);

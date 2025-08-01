@@ -36,6 +36,7 @@
         <spring-boot-starter-web-dependencies.version>3.5.4</spring-boot-starter-web-dependencies.version>
         <jakarta-persistence-dependencies.version>3.1.0</jakarta-persistence-dependencies.version>
         <spring-boot-starter-validation-dependencies.version>3.5.4</spring-boot-starter-validation-dependencies.version>
+        <org.postgresql-dependencies.version>42.7.3</org.postgresql-dependencies.version>
 
         <!--       Plugins       -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -126,6 +127,12 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-validation</artifactId>
                 <version>${spring-boot-starter-validation-dependencies.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${org.postgresql-dependencies.version}</version>
+                <scope>runtime</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

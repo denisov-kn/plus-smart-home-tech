@@ -26,7 +26,7 @@ public class Product {
     UUID id;
 
     @NotNull
-    String name;
+    String productName;
 
     @NotNull
     String description;

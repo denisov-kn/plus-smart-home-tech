@@ -1,8 +1,10 @@
 package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.ShoppingCartRepository;
+import ru.practicum.client.WarehouseClient;
 import ru.practicum.dto.shoppingCart.ChangeProductQuantityRequest;
 import ru.practicum.dto.shoppingCart.ShoppingCartDto;
 import ru.practicum.exception.NotAuthorizedUserException;
@@ -18,9 +20,11 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private final ShoppingCartRepository shoppingCartRepository;
+    private final WarehouseClient warehouseClient;
 
     @Override
     public ShoppingCartDto getShoppingCart(String username) {
@@ -40,11 +44,26 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                             .build();
                     return shoppingCartRepository.save(newCart);
                 });
+        log.info("Shopping cart before update {}", cart);
+
+
+        ShoppingCartDto shoppingCartDto = ShoppingCartDto.builder()
+                .shoppingCartId(cart.getId().toString())
+                .products(products)
+                .build();
+
+        warehouseClient.checkCart(shoppingCartDto);
+
+
         List<CartProduct> cartProduct = cart.getProducts();
         List<CartProduct> cartProductsToUpdate = Mapper.toCartProduct(cart, products);
         cartProduct.addAll(cartProductsToUpdate);
 
+        log.info("Shopping cart after update {}", cart);
+
         shoppingCartRepository.save(cart);
+
+        log.info("Updated shopping cart {}", cart);
 
         return Mapper.toShoppingCartDto(cart);
 
