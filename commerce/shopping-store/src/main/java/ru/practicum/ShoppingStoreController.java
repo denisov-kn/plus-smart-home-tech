@@ -1,13 +1,17 @@
 package ru.practicum;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.client.ShoppingStoreClient;
 import ru.practicum.dto.shoppingStore.ProductDto;
-import ru.practicum.dto.shoppingStore.ProductListDto;
+import ru.practicum.dto.shoppingStore.enums.ProductCategory;
 import ru.practicum.dto.shoppingStore.enums.QuantityState;
 import ru.practicum.service.ShoppingStoreService;
+
+
 
 @RestController
 @RequestMapping("/api/v1/shopping-store")
@@ -17,8 +21,8 @@ public class ShoppingStoreController implements ShoppingStoreClient {
     private final ShoppingStoreService shoppingStoreService;
 
     @Override
-    public ProductListDto getProducts(String category, Integer page, Integer size, String sort, String direction) {
-        return shoppingStoreService.getProducts(category, page, size, sort, direction);
+    public Page<ProductDto> getProducts(ProductCategory category, Pageable pageable) {
+        return shoppingStoreService.getProducts(category, pageable);
     }
 
     @Override
