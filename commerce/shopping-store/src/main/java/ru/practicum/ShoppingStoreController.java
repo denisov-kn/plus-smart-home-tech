@@ -16,7 +16,6 @@ import ru.practicum.service.ShoppingStoreService;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/shopping-store")
 @RequiredArgsConstructor
 public class ShoppingStoreController implements ShoppingStoreApi {
 
