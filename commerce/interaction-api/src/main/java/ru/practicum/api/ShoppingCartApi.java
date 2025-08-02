@@ -1,4 +1,4 @@
-package ru.practicum.client;
+package ru.practicum.api;
 
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.shoppingCart.ChangeProductQuantityRequest;
@@ -7,25 +7,25 @@ import ru.practicum.dto.shoppingCart.ShoppingCartDto;
 import java.util.List;
 import java.util.Map;
 
-@RequestMapping("/api/v1/shopping-cart")
+
 public interface ShoppingCartApi {
-    @GetMapping
+    @GetMapping("/api/v1/shopping-cart")
     ShoppingCartDto getShoppingCart(@RequestParam String username);
 
-    @PutMapping
+    @PutMapping("/api/v1/shopping-cart")
     ShoppingCartDto updateShoppingCart(@RequestParam String username,
                                        @RequestBody Map<String, Integer> products
     );
 
-    @DeleteMapping
+    @DeleteMapping("/api/v1/shopping-cart")
     void deleteShoppingCart(@RequestParam String username);
 
-    @PostMapping("/remove")
+    @PostMapping("/api/v1/shopping-cart/remove")
     ShoppingCartDto removeProductsFromShoppingCart(@RequestParam String username,
                                                    @RequestBody List<String> products
     );
 
-    @PostMapping ("/change-quantity")
+    @PostMapping ("/api/v1/shopping-cart/change-quantity")
     ShoppingCartDto changeQuantityShoppingCart(@RequestParam String username,
                                                @RequestBody ChangeProductQuantityRequest request
     );

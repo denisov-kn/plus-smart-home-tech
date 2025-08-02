@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.client.ShoppingStoreApi;
+import ru.practicum.api.ShoppingStoreApi;
 import ru.practicum.dto.shoppingStore.ProductDto;
 import ru.practicum.dto.shoppingStore.enums.ProductCategory;
 import ru.practicum.dto.shoppingStore.enums.QuantityState;

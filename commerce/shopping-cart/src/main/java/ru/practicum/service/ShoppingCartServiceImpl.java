@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.ShoppingCartRepository;
-import ru.practicum.client.WarehouseApi;
 import ru.practicum.client.WarehouseClient;
 import ru.practicum.dto.shoppingCart.ChangeProductQuantityRequest;
 import ru.practicum.dto.shoppingCart.ShoppingCartDto;

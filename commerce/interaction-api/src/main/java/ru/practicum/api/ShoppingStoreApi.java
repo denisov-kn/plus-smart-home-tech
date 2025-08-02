@@ -1,6 +1,5 @@
-package ru.practicum.client;
+package ru.practicum.api;
 
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -10,25 +9,24 @@ import ru.practicum.dto.shoppingStore.enums.ProductCategory;
 import ru.practicum.dto.shoppingStore.enums.QuantityState;
 
 
-@RequestMapping("/api/v1/shopping-store")
 public interface ShoppingStoreApi {
-    @GetMapping
+    @GetMapping("/api/v1/shopping-store")
     Page<ProductDto> getProducts(@RequestParam ProductCategory category, @PageableDefault(sort = {"productName"}) Pageable pageable);
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/v1/shopping-store/{id}")
     ProductDto getProduct(@PathVariable String id);
 
-    @PutMapping
+    @PutMapping("/api/v1/shopping-store")
     ProductDto createProduct(@RequestBody ProductDto productDto);
 
-    @PostMapping("/removeProductFromStore")
+    @PostMapping("/api/v1/shopping-store/removeProductFromStore")
     void removeProductFromStore(@RequestBody String productId);
 
-    @PostMapping("/quantityState")
+    @PostMapping("/api/v1/shopping-store/quantityState")
     void quantityState(@RequestParam (required = true) String productId,
                        @RequestParam (required = true) QuantityState quantityState
                        );
 
-    @PostMapping
+    @PostMapping("/api/v1/shopping-store")
     ProductDto updateProduct(@RequestBody ProductDto productDto);
 }
