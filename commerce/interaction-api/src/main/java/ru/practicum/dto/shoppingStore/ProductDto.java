@@ -12,6 +12,7 @@ import ru.practicum.dto.shoppingStore.enums.QuantityState;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
 public class ProductDto {
     String productId;
     String productName;

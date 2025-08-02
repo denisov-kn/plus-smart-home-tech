@@ -11,6 +11,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
 public class ShoppingCartDto {
     String shoppingCartId;
     Map<String, Integer> products;
