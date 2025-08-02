@@ -10,9 +10,8 @@ import ru.practicum.dto.shoppingStore.enums.ProductCategory;
 import ru.practicum.dto.shoppingStore.enums.QuantityState;
 
 
-
-@FeignClient(name = "shopping-store", path = "/api/v1/shopping-store")
-public interface ShoppingStoreClient {
+@RequestMapping("/api/v1/shopping-store")
+public interface ShoppingStoreApi {
     @GetMapping
     Page<ProductDto> getProducts(@RequestParam ProductCategory category, @PageableDefault(sort = {"productName"}) Pageable pageable);
 

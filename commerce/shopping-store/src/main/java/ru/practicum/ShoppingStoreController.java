@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.client.ShoppingStoreClient;
+import ru.practicum.client.ShoppingStoreApi;
 import ru.practicum.dto.shoppingStore.ProductDto;
 import ru.practicum.dto.shoppingStore.enums.ProductCategory;
 import ru.practicum.dto.shoppingStore.enums.QuantityState;
@@ -18,7 +18,7 @@ import ru.practicum.service.ShoppingStoreService;
 @RestController
 @RequestMapping("/api/v1/shopping-store")
 @RequiredArgsConstructor
-public class ShoppingStoreController implements ShoppingStoreClient {
+public class ShoppingStoreController implements ShoppingStoreApi {
 
     private final ShoppingStoreService shoppingStoreService;
 

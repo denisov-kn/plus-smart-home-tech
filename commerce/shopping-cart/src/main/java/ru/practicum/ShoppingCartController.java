@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.client.ShoppingCartClient;
+import ru.practicum.client.ShoppingCartApi;
 import ru.practicum.dto.shoppingCart.ChangeProductQuantityRequest;
 import ru.practicum.dto.shoppingCart.ShoppingCartDto;
 import ru.practicum.service.ShoppingCartService;
@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/shopping-cart")
 @RequiredArgsConstructor
-public class ShoppingCartController implements ShoppingCartClient {
+public class ShoppingCartController implements ShoppingCartApi {
 
     private final ShoppingCartService shoppingCartService;
 
