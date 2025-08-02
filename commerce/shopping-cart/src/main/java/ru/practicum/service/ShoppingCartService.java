@@ -2,7 +2,6 @@ package ru.practicum.service;
 
 import ru.practicum.dto.shoppingCart.ChangeProductQuantityRequest;
 import ru.practicum.dto.shoppingCart.ShoppingCartDto;
-import ru.practicum.dto.shoppingStore.SetProductQuantityStateRequest;
 
 import java.util.List;
 import java.util.Map;

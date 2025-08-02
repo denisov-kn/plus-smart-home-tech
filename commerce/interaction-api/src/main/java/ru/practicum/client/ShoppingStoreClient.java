@@ -4,7 +4,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.shoppingStore.ProductDto;
 import ru.practicum.dto.shoppingStore.ProductListDto;
-import ru.practicum.dto.shoppingStore.SetProductQuantityStateRequest;
 import ru.practicum.dto.shoppingStore.enums.QuantityState;
 
 @FeignClient(name = "shopping-store", path = "/api/v1/shopping-store")

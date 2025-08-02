@@ -2,12 +2,10 @@ package ru.practicum;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.client.ShoppingStoreClient;
 import ru.practicum.dto.shoppingStore.ProductDto;
 import ru.practicum.dto.shoppingStore.ProductListDto;
-import ru.practicum.dto.shoppingStore.SetProductQuantityStateRequest;
 import ru.practicum.dto.shoppingStore.enums.QuantityState;
 import ru.practicum.service.ShoppingStoreService;
 

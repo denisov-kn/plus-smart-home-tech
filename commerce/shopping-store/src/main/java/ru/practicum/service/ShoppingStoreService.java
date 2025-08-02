@@ -1,9 +1,7 @@
 package ru.practicum.service;
 
-
 import ru.practicum.dto.shoppingStore.ProductDto;
 import ru.practicum.dto.shoppingStore.ProductListDto;
-import ru.practicum.dto.shoppingStore.SetProductQuantityStateRequest;
 import ru.practicum.dto.shoppingStore.enums.QuantityState;
 
 public interface ShoppingStoreService {

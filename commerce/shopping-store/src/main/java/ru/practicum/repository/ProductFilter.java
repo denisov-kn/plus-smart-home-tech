@@ -1,7 +1,6 @@
 package ru.practicum.repository;
 
 import lombok.Setter;
-import org.springframework.data.domain.Sort;
 import ru.practicum.dto.shoppingStore.enums.ProductCategory;
 
 import java.util.Optional;
