@@ -31,7 +31,13 @@
         <protobuf.version>3.23.4</protobuf.version>
         <grpc.version>1.63.0</grpc.version>
         <spring-cloud-dependencies.version>2023.0.3</spring-cloud-dependencies.version>
+        <spring-cloud-starter-openfeign-dependencies.version>4.3.0</spring-cloud-starter-openfeign-dependencies.version>
         <spring-retry-dependencies.version>2.0.12</spring-retry-dependencies.version>
+        <spring-boot-starter-web-dependencies.version>3.5.4</spring-boot-starter-web-dependencies.version>
+        <jakarta-persistence-dependencies.version>3.1.0</jakarta-persistence-dependencies.version>
+        <spring-boot-starter-validation-dependencies.version>3.5.4</spring-boot-starter-validation-dependencies.version>
+        <org.postgresql-dependencies.version>42.7.3</org.postgresql-dependencies.version>
+        <org.hibernate.validator-dependencies.version>8.0.2.Final</org.hibernate.validator-dependencies.version>
 
         <!--       Plugins       -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -102,6 +108,37 @@
                 <groupId>org.springframework.retry</groupId>
                 <artifactId>spring-retry</artifactId>
                 <version>${spring-retry-dependencies.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>${spring-cloud-starter-openfeign-dependencies.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot-starter-web-dependencies.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
+                <version>${jakarta-persistence-dependencies.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-validation</artifactId>
+                <version>${spring-boot-starter-validation-dependencies.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${org.postgresql-dependencies.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate.validator</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${org.hibernate.validator-dependencies.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
