@@ -38,7 +38,7 @@
         <spring-boot-starter-validation-dependencies.version>3.5.4</spring-boot-starter-validation-dependencies.version>
         <org.postgresql-dependencies.version>42.7.3</org.postgresql-dependencies.version>
         <org.hibernate.validator-dependencies.version>8.0.2.Final</org.hibernate.validator-dependencies.version>
-
+        <spring-cloud-starter-gateway-dependencies.version>4.1.5</spring-cloud-starter-gateway-dependencies.version>
         <!--       Plugins       -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <avro-maven-plugin.version>${avro.version}</avro-maven-plugin.version>
@@ -139,6 +139,11 @@
                 <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>${org.hibernate.validator-dependencies.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-gateway</artifactId>
+                <version>${spring-cloud-starter-gateway-dependencies.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

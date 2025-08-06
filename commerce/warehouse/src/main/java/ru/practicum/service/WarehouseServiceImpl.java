@@ -135,10 +135,6 @@ public class WarehouseServiceImpl implements WarehouseService {
         }
     }
 
-    private void checkProduct(ShoppingCartDto shoppingCartDto) {
-
-    }
-
     private static Set<UUID> getUuids(ShoppingCartDto shoppingCartDto) {
         Set<UUID> productIds = shoppingCartDto.getProducts().keySet().stream()
                 .map(UUID::fromString)
