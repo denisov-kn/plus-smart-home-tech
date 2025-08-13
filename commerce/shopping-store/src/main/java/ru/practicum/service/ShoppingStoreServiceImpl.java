@@ -26,7 +26,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
-    public ProductDto getProduct(String id) {
+    public ProductDto getProduct(UUID id) {
         return Mapper.toDto(shoppingStoreRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new NotFoundException("Продукт с id " + id + " не найден"))
         );
@@ -39,25 +39,23 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
-    public void removeProductFromStore(String productId) {
-        UUID uuid = UUID.fromString(productId);
-        Product product = findProductById(uuid);
+    public void removeProductFromStore(UUID productId) {
+
+        Product product = findProductById(productId);
         product.setProductState(ProductState.DEACTIVATE);
         shoppingStoreRepository.save(product);
     }
 
     @Override
-    public void quantityState(String productId, QuantityState quantityState) {
-        UUID uuid = UUID.fromString(productId);
-        Product product = findProductById(uuid);
+    public void quantityState(UUID productId, QuantityState quantityState) {
+        Product product = findProductById(productId);
         product.setQuantityState(quantityState);
         shoppingStoreRepository.save(product);
     }
 
     @Override
     public ProductDto updateProduct(ProductDto productDto) {
-        UUID uuid = UUID.fromString(productDto.getProductId());
-        Product product = findProductById(uuid);
+        Product product = findProductById(productDto.getProductId());
         Mapper.updateProductFromDto(productDto, product);
         return Mapper.toDto(shoppingStoreRepository.save(product));
     }

@@ -1,10 +1,13 @@
 package ru.practicum.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.UuidGenerator;
 import ru.practicum.dto.payment.enums.PaymentState;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "payments")
@@ -18,10 +21,13 @@ public class Payment {
     @Id
     @GeneratedValue
     @UuidGenerator
-    String paymentId;
+    UUID paymentId;
 
     @Enumerated(EnumType.STRING)
     PaymentState state;
+
+    @NotNull
+    UUID orderId;
 
     Double totalPayment;
     Double deliveryTotal;

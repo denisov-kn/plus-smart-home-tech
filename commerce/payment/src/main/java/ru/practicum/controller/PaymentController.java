@@ -26,9 +26,9 @@ public class PaymentController implements PaymentApi {
     }
 
     @Override
-    public Double totalCost(UUID orderId) {
-        log.info("Total cost for order: {}", orderId);
-        Double cost = paymentService.totalCost(orderId);
+    public Double totalCost(OrderDto orderDto) {
+        log.info("Total cost for order: {}", orderDto);
+        Double cost = paymentService.totalCost(orderDto);
         log.info("Total cost: {}", cost);
         return cost;
     }

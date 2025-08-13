@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.UuidGenerator;
 import ru.practicum.dto.delivery.enums.DeliveryState;
-import ru.practicum.dto.warehouse.AddressDto;
 
 import java.util.UUID;
 

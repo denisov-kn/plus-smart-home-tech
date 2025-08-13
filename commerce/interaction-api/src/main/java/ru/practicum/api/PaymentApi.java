@@ -16,7 +16,7 @@ public interface PaymentApi {
     PaymentDto createPayment(@RequestBody OrderDto order);
 
     @PostMapping("/api/v1/payment/totalCost")
-    Double totalCost(@RequestParam UUID orderId);
+    Double totalCost(@RequestParam OrderDto orderDto);
 
     @PostMapping("/api/v1/payment/refund")
     void refund(@RequestParam UUID paymentId);

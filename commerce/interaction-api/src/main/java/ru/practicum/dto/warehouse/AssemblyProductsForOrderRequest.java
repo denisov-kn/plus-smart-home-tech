@@ -1,5 +1,4 @@
-package ru.practicum.dto.shoppingCart;
-
+package ru.practicum.dto.warehouse;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,10 +9,10 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 @ToString
-public class ShoppingCartDto {
-    UUID shoppingCartId;
+public class AssemblyProductsForOrderRequest {
     Map<UUID, Integer> products;
+    UUID orderId;
 }

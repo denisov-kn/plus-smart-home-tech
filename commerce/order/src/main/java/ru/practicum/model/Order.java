@@ -28,6 +28,9 @@ public class Order {
     @NotNull
     UUID shoppingCartId;
 
+    @NotNull
+    String username;
+
     @ElementCollection
     @CollectionTable(name = "order_products", joinColumns = @JoinColumn(name = "order_id"))
     @MapKeyColumn(name = "product_id")
@@ -36,6 +39,10 @@ public class Order {
 
     UUID paymentId;
     UUID deliveryId;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "to_address_id")
+    Address orderAddress;
 
     @Enumerated(EnumType.STRING)
     OrderState state;

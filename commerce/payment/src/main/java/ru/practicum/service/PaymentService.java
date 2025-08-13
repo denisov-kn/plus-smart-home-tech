@@ -8,9 +8,9 @@ public interface PaymentService {
 
     PaymentDto createPayment(OrderDto order);
 
-    Double totalCost(UUID orderId);
+    Double totalCost(OrderDto order);
 
-    Double refund(UUID paymentId);
+    void refund(UUID paymentId);
 
     Double productCost(OrderDto order);
 

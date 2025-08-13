@@ -2,6 +2,7 @@ package ru.practicum.service;
 
 
 import ru.practicum.dto.delivery.DeliveryDto;
+import ru.practicum.dto.order.OrderDto;
 
 import java.util.UUID;
 
@@ -15,5 +16,5 @@ public interface DeliveryService {
 
     void failedDelivery(UUID deliveryId);
 
-    Double deliveryCost(DeliveryDto deliveryDto);
+    Double deliveryCost(OrderDto orderDto);
 }

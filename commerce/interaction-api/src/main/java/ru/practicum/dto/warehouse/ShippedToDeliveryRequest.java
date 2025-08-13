@@ -1,10 +1,8 @@
-package ru.practicum.dto.shoppingCart;
-
+package ru.practicum.dto.warehouse;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Data
@@ -13,7 +11,7 @@ import java.util.UUID;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString
-public class ShoppingCartDto {
-    UUID shoppingCartId;
-    Map<UUID, Integer> products;
+public class ShippedToDeliveryRequest {
+    UUID orderId;
+    UUID deliveryId;
 }

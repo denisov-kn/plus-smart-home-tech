@@ -19,6 +19,7 @@ public class WarehouseProduct {
     @Id
     UUID productId;
 
+
     Boolean fragile;
 
     @Embedded

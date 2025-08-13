@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.api.DeliveryApi;
 import ru.practicum.dto.delivery.DeliveryDto;
+import ru.practicum.dto.order.OrderDto;
 import ru.practicum.service.DeliveryService;
 
 import java.util.UUID;
@@ -46,9 +47,9 @@ public class DeliveryController implements DeliveryApi {
     }
 
     @Override
-    public Double deliveryCost(DeliveryDto deliveryDto) {
-        log.info("Delivery cost request: {}", deliveryDto);
-        Double deliveryCost = deliveryService.deliveryCost(deliveryDto);
+    public Double deliveryCost(OrderDto orderDto) {
+        log.info("Delivery cost OrderDto: {}", orderDto);
+        Double deliveryCost = deliveryService.deliveryCost(orderDto);
         log.info("Delivery cost: {}", deliveryCost);
         return deliveryCost;
     }

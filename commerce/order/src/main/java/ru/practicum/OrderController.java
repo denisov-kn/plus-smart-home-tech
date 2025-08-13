@@ -1,5 +1,6 @@
 package ru.practicum;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ public class OrderController implements OrderApi {
     }
 
     @Override
-    public OrderDto createOrder(String username, CreateNewOrderRequest request) {
+    public OrderDto createOrder(String username, @Valid CreateNewOrderRequest request) {
         log.info("createOrder called for {}", username);
         log.info("CreateNewOrderRequest: {}", request);
         OrderDto orderDto = orderService.createOrder(username, request);
@@ -39,7 +40,7 @@ public class OrderController implements OrderApi {
     }
 
     @Override
-    public OrderDto returnOrder(ProductReturnRequest request) {
+    public OrderDto returnOrder(@Valid ProductReturnRequest request) {
         log.info("returnOrder called for request {}", request);
         OrderDto orderDto = orderService.returnOrder(request);
         log.info("Return order: {}", orderDto);
