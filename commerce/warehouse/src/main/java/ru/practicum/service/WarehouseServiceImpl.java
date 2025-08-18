@@ -2,12 +2,10 @@ package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import ru.practicum.clients.OrderClient;
 import ru.practicum.dto.warehouse.*;
 import ru.practicum.exception.ProductInShoppingCartLowQuantityInWarehouse;
 import ru.practicum.model.OrderBooking;
-import ru.practicum.model.OrderBookingItem;
 import ru.practicum.model.WarehouseInventory;
 import ru.practicum.repository.OrderBookingRepository;
 import ru.practicum.repository.WarehouseInventoryRepository;
@@ -28,6 +26,8 @@ public class WarehouseServiceImpl implements WarehouseService {
     private final WarehouseProductRepository warehouseProductRepository;
     private final WarehouseInventoryRepository warehouseInventoryRepository;
     private final OrderBookingRepository orderBookingRepository;
+
+    private final OrderClient orderClient;
 
     private static final String[] ADDRESSES =
             new String[] {"ADDRESS_1", "ADDRESS_2"};
@@ -75,8 +75,6 @@ public class WarehouseServiceImpl implements WarehouseService {
                 .deliveryWeight(deliveryWeight)
                 .deliveryVolume(deliveryVolume)
                 .build();
-
-
 
     }
 
@@ -176,18 +174,21 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public void shippedProducts(ShippedToDeliveryRequest request) {
 
+        OrderBooking orderBooking = getOrderBooking(request.getOrderId());
+        orderBooking.setDeliveryId(request.getDeliveryId());
+        orderBookingRepository.save(orderBooking);
+        // меняем статус на Assembled
+        orderClient.assemblyOrder(request.getOrderId());
     }
 
     @Override
     public void returnProducts(Map<UUID, Integer> products) {
-
+        
     }
 
     @Override
     public BookedProductsDto assemblyProducts(AssemblyProductsForOrderRequest request) {
         //TODO еще раз проверить что продуктов хватает
-
-
 
         OrderBooking orderBooking = OrderBooking.builder()
                 .orderId(request.getOrderId())
@@ -199,6 +200,9 @@ public class WarehouseServiceImpl implements WarehouseService {
         Set<UUID> productIds = request.getProducts().keySet();
         List<WarehouseProduct> foundProducts = warehouseProductRepository.findByProductIdIn(productIds);
 
+        reduceQuantityFromInventory(request.getProducts());
+
+
         return BookedProductsDto.builder()
                 .deliveryWeight(getDeliveryWeight(foundProducts))
                 .deliveryVolume(getDeliveryVolume(foundProducts))
@@ -207,10 +211,28 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     }
 
+    private void reduceQuantityFromInventory(Map<UUID, Integer> products) {
+
+        Set<UUID> productIds = products.keySet();
+        List<WarehouseInventory> warehouseInventories = warehouseInventoryRepository.findByProductIdIn(productIds);
+        for (WarehouseInventory warehouseInventory : warehouseInventories) {
+            UUID productId = warehouseInventory.getProduct().getProductId();
+            warehouseInventory.setQuantity(warehouseInventory.getQuantity() - products.get(productId));
+        }
+
+        warehouseInventoryRepository.saveAll(warehouseInventories);
+    }
+
 
     private WarehouseProduct getWarehouseProduct(UUID productId) {
         return warehouseProductRepository.findById(productId).orElseThrow(
                 () -> new NotFoundException("В склде нет продукта с id: " + productId)
+        );
+    }
+
+    private OrderBooking getOrderBooking(UUID orderId) {
+        return orderBookingRepository.findById(orderId).orElseThrow(
+                () -> new NotFoundException("В складе нет бронирования для заказа: " + orderId)
         );
     }
 }

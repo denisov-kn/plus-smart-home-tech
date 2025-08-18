@@ -15,5 +15,6 @@ CREATE TABLE IF NOT EXISTS warehouse_inventory (
 );
 
 CREATE TABLE IF NOT EXISTS order_booking (
-    order_id UUID PRIMARY KEY
+    order_id UUID PRIMARY KEY,
+    delivery_id UUID
 );

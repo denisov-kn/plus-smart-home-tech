@@ -27,7 +27,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     public ProductDto getProduct(UUID id) {
-        return Mapper.toDto(shoppingStoreRepository.findById(UUID.fromString(id))
+        return Mapper.toDto(shoppingStoreRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Продукт с id " + id + " не найден"))
         );
     }

@@ -2,9 +2,12 @@ package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.clients.OrderClient;
+import ru.practicum.clients.WarehouseClient;
 import ru.practicum.dto.delivery.DeliveryDto;
 import ru.practicum.dto.delivery.enums.DeliveryState;
 import ru.practicum.dto.order.OrderDto;
+import ru.practicum.dto.warehouse.ShippedToDeliveryRequest;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.model.Delivery;
 import ru.practicum.repositiry.DeliveryRepository;
@@ -19,6 +22,9 @@ public class DeliveryServiceImpl implements DeliveryService{
     private static final Double  BASE_COST = 5.0;
 
     private final DeliveryRepository deliveryRepository;
+
+    private final WarehouseClient warehouseClient;
+    private final OrderClient orderClient;
 
 
     @Override
@@ -35,16 +41,38 @@ public class DeliveryServiceImpl implements DeliveryService{
 
     @Override
     public void successfulDelivery(UUID deliveryId) {
+        Delivery delivery = findDeliveryById(deliveryId);
+        delivery.setDeliveryState(DeliveryState.DELIVERED);
+        deliveryRepository.save(delivery);
+        //сообщаем что заказ не доставлен
+        orderClient.deliveryOrderFailed(deliveryId);
 
     }
 
     @Override
     public void pickedDelivery(UUID deliveryId) {
 
+        Delivery delivery = findDeliveryById(deliveryId);
+        delivery.setDeliveryState(DeliveryState.IN_PROGRESS);
+        deliveryRepository.save(delivery);
+
+        // передаем в доставку
+        ShippedToDeliveryRequest request = ShippedToDeliveryRequest.builder()
+                .deliveryId(deliveryId)
+                .orderId(delivery.getOrderId())
+                .build();
+        warehouseClient.shippedProducts(request);
+
     }
 
     @Override
     public void failedDelivery(UUID deliveryId) {
+        Delivery delivery = findDeliveryById(deliveryId);
+        delivery.setDeliveryState(DeliveryState.FAILED);
+        deliveryRepository.save(delivery);
+        //сообщаем что заказ не доставлен
+        orderClient.deliveryOrderFailed(delivery.getOrderId());
+
 
     }
 

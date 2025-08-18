@@ -18,6 +18,8 @@ public class OrderBooking {
     @Id
     UUID orderId;
 
+    UUID deliveryId;
+
     @ElementCollection
     @CollectionTable(
             name = "order_booking_products",

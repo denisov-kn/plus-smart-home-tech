@@ -12,23 +12,23 @@ import java.util.stream.Collectors;
 public class Mapper {
     public static ShoppingCartDto toShoppingCartDto(Cart cart) {
 
-        Map<String, Integer> products = cart.getProducts().stream()
+        Map<UUID, Integer> products = cart.getProducts().stream()
                 .collect(Collectors.toMap(
-                        cartProduct -> cartProduct.getProductId().toString(),
+                        cartProduct -> cartProduct.getProductId(),
                         CartProduct::getQuantity
                 ));
 
         return ShoppingCartDto.builder()
-                .shoppingCartId(cart.getId().toString())
+                .shoppingCartId(cart.getId())
                 .products(products)
                 .build();
     }
 
-    public static List<CartProduct> toCartProduct(Cart cart, Map<String, Integer> products) {
+    public static List<CartProduct> toCartProduct(Cart cart, Map<UUID, Integer> products) {
         return products.entrySet().stream()
                 .map(entry -> CartProduct.builder()
                         .cart(cart)
-                        .productId(UUID.fromString(entry.getKey()))
+                        .productId(entry.getKey())
                         .quantity(entry.getValue())
                         .build())
                 .toList();

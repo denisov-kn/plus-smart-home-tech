@@ -13,14 +13,12 @@ import ru.practicum.dto.order.enums.OrderState;
 import ru.practicum.dto.payment.PaymentDto;
 import ru.practicum.dto.warehouse.AssemblyProductsForOrderRequest;
 import ru.practicum.dto.warehouse.BookedProductsDto;
-import ru.practicum.dto.warehouse.ShippedToDeliveryRequest;
 import ru.practicum.exception.NoOrderFoundException;
 import ru.practicum.model.Order;
 import ru.practicum.repository.OrderRepository;
 import ru.practicum.utils.Mapper;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +68,47 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto returnOrder(ProductReturnRequest request) {
-        return null;
+
+        Order order = getOrderById(request.getOrderId());
+        compareProductBetweenOrderAndRequest(request, order);
+        order.setState(OrderState.PRODUCT_RETURNED);
+        warehouseClient.returnProducts(request.getProducts());
+        return Mapper.toOrderDto(orderRepository.save(order));
+    }
+
+    private static void compareProductBetweenOrderAndRequest(ProductReturnRequest request, Order order) {
+        List<String> problems = new ArrayList<>();
+
+        Map<UUID, Integer> productFromOrder = order.getProducts();
+        Map<UUID, Integer> productFromRequest = request.getProducts();
+
+        Set<UUID> onlyInRequest = productFromRequest.keySet();
+        onlyInRequest.removeAll(productFromOrder.keySet());
+
+        if (!onlyInRequest.isEmpty()) {
+            problems.add("В заказе нет следующих продуктов " + onlyInRequest);
+        }
+
+        Map<UUID, Integer> moreInRequest = new HashMap<>();
+        for (UUID productId : productFromRequest.keySet()) {
+            if (productFromOrder.containsKey(productId)) {
+                int quantityFromOrder = productFromOrder.get(productId);
+                int quantityFromRequest = productFromRequest.get(productId);
+                if(quantityFromRequest > quantityFromOrder) {
+                    moreInRequest.put(productId, quantityFromRequest);
+                }
+            }
+        }
+
+        if (!moreInRequest.isEmpty()) {
+            problems.add("По некоторым продуктам кол-во на возврат больше чем было в заказе: " + moreInRequest);
+        }
+
+        if (!problems.isEmpty()) {
+            throw new IllegalStateException(
+                    "Нельзя сделать возврат: " + String.join("; ", problems)
+            );
+        }  // TODO добавить обработку исключения
     }
 
     @Override
@@ -81,14 +119,12 @@ public class OrderServiceImpl implements OrderService {
 
         return Mapper.toOrderDto(orderRepository.save(order));
 
-
     }
 
     @Override
     public OrderDto payOrderFailed(UUID orderId) {
         Order order = getOrderById(orderId);
         order.setState(OrderState.PAYMENT_FAILED);
-
 
         return Mapper.toOrderDto(orderRepository.save(order));
 
@@ -97,24 +133,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto deliveryOrder(UUID orderId) {
-
         Order order = getOrderById(orderId);
-        // передаем в доставку
-        ShippedToDeliveryRequest request = ShippedToDeliveryRequest.builder()
-                .deliveryId(order.getDeliveryId())
-                .orderId(orderId)
-                .build();
-        warehouseClient.shippedProducts(request);
+        order.setState(OrderState.DELIVERED);
+        return Mapper.toOrderDto(orderRepository.save(order));
+
     }
 
     @Override
     public OrderDto deliveryOrderFailed(UUID orderId) {
-        return null;
+        Order order = getOrderById(orderId);
+        order.setState(OrderState.DELIVERY_FAILED);
+        return Mapper.toOrderDto(orderRepository.save(order));
     }
 
     @Override
     public OrderDto completedOrder(UUID orderId) {
-        return null;
+        Order order = getOrderById(orderId);
+        order.setState(OrderState.COMPLETED);
+        return Mapper.toOrderDto(orderRepository.save(order));
     }
 
     @Override
@@ -141,7 +177,6 @@ public class OrderServiceImpl implements OrderService {
                 .orderId(orderId)
                 .build();
         warehouseClient.assemblyProducts(assemblyRequest);
-
 
         Double deliveryPrice = 0.0;
         if (order.getDeliveryPrice() != null) {   //если уже считали заказ

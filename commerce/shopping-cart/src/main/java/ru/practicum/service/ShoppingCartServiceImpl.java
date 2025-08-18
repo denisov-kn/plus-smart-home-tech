@@ -33,7 +33,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCartDto updateShoppingCart(String username, Map<String, Integer> products) {
+    public ShoppingCartDto updateShoppingCart(String username, Map<UUID, Integer> products) {
 
         Cart cart = shoppingCartRepository.findByUsernameAndState(username, CartState.ACTIVE)
                 .orElseGet( () -> {
@@ -48,7 +48,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 
         ShoppingCartDto shoppingCartDto = ShoppingCartDto.builder()
-                .shoppingCartId(cart.getId().toString())
+                .shoppingCartId(cart.getId())
                 .products(products)
                 .build();
 
