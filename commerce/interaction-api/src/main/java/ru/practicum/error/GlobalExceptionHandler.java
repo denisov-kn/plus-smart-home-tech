@@ -7,10 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.exception.NoProductsInShoppingCartException;
-import ru.practicum.exception.NotAuthorizedUserException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ProductInShoppingCartLowQuantityInWarehouse;
+import ru.practicum.exception.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -72,6 +69,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse onProductInShoppingCartLowQuantityInWarehouseException(ProductInShoppingCartLowQuantityInWarehouse e) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, "Low quantity of product in shopping cart ", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse onOrderFoundException(NoOrderFoundException e) {
+        return new ErrorResponse(HttpStatus.NOT_FOUND, "The order was not found.", e.getMessage());
     }
 
 

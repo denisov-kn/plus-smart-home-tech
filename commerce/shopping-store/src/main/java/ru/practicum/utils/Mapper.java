@@ -6,7 +6,7 @@ import ru.practicum.model.Product;
 public class Mapper {
     public static ProductDto toDto(Product product) {
         return ProductDto.builder()
-                .productId(product.getId().toString())
+                .productId(product.getId())
                 .productName(product.getProductName())
                 .description(product.getDescription())
                 .imageSrc(product.getImageSrc())

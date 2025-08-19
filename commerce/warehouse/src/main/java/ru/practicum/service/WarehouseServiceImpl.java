@@ -2,15 +2,15 @@ package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.clients.OrderClient;
+import ru.practicum.dto.warehouse.*;
 import ru.practicum.exception.ProductInShoppingCartLowQuantityInWarehouse;
+import ru.practicum.model.OrderBooking;
 import ru.practicum.model.WarehouseInventory;
+import ru.practicum.repository.OrderBookingRepository;
 import ru.practicum.repository.WarehouseInventoryRepository;
 import ru.practicum.repository.WarehouseProductRepository;
 import ru.practicum.dto.shoppingCart.ShoppingCartDto;
-import ru.practicum.dto.warehouse.AddProductToWarehouseRequest;
-import ru.practicum.dto.warehouse.AddressDto;
-import ru.practicum.dto.warehouse.BookedProductsDto;
-import ru.practicum.dto.warehouse.NewProductInWarehouseRequest;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.model.WarehouseProduct;
 import ru.practicum.utils.WarehouseMapper;
@@ -25,6 +25,9 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     private final WarehouseProductRepository warehouseProductRepository;
     private final WarehouseInventoryRepository warehouseInventoryRepository;
+    private final OrderBookingRepository orderBookingRepository;
+
+    private final OrderClient orderClient;
 
     private static final String[] ADDRESSES =
             new String[] {"ADDRESS_1", "ADDRESS_2"};
@@ -35,7 +38,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public void addNewProduct(NewProductInWarehouseRequest request) {
         WarehouseProduct warehouseProduct = WarehouseProduct.builder()
-                .productId(UUID.fromString(request.getProductId()))
+                .productId(request.getProductId())
                 .fragile(request.getFragile())
                 .dimension(WarehouseMapper.fromDimensionDto(request.getDimension()))
                 .weight(request.getWeight())
@@ -48,7 +51,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     public BookedProductsDto checkCart(ShoppingCartDto shoppingCartDto) {
 
 
-        Set<UUID> productIds = getUuids(shoppingCartDto);
+        Set<UUID> productIds = shoppingCartDto.getProducts().keySet();
 
         List<WarehouseProduct> foundProducts = warehouseProductRepository.findByProductIdIn(productIds);
 
@@ -61,21 +64,10 @@ public class WarehouseServiceImpl implements WarehouseService {
         checkQuantity(shoppingCartDto, foundInventory);
 
 
-        boolean hasFragile = foundProducts.stream()
-                .anyMatch(WarehouseProduct::getFragile);
+        boolean hasFragile = isHasFragile(foundProducts);
 
-        double deliveryWeight = foundProducts.stream()
-                .mapToDouble(WarehouseProduct::getWeight)
-                .sum();
-        double deliveryVolume = foundProducts.stream()
-                .map(WarehouseProduct::getDimension)
-                        .mapToDouble(dimension -> {
-                            double width = dimension.getWidth();
-                            double height = dimension.getHeight();
-                            double depth = dimension.getDepth();
-                            return width * height * height * depth * depth;
-                                })
-                .sum();
+        double deliveryWeight = getDeliveryWeight(foundProducts);
+        double deliveryVolume = getDeliveryVolume(foundProducts);
 
 
         return  BookedProductsDto.builder()
@@ -84,16 +76,37 @@ public class WarehouseServiceImpl implements WarehouseService {
                 .deliveryVolume(deliveryVolume)
                 .build();
 
+    }
 
+    private static double getDeliveryVolume(List<WarehouseProduct> foundProducts) {
+        return foundProducts.stream()
+                .map(WarehouseProduct::getDimension)
+                .mapToDouble(dimension -> {
+                    double width = dimension.getWidth();
+                    double height = dimension.getHeight();
+                    double depth = dimension.getDepth();
+                    return width * height * height * depth * depth;
+                })
+                .sum();
+    }
 
+    private static double getDeliveryWeight(List<WarehouseProduct> foundProducts) {
+        return foundProducts.stream()
+                .mapToDouble(WarehouseProduct::getWeight)
+                .sum();
+    }
+
+    private static boolean isHasFragile(List<WarehouseProduct> foundProducts) {
+        return foundProducts.stream()
+                .anyMatch(WarehouseProduct::getFragile);
     }
 
     private static void checkQuantity(ShoppingCartDto shoppingCartDto, List<WarehouseInventory> foundInventory) {
-        Map<String, Integer> requestedProducts = shoppingCartDto.getProducts();
-        List<String> missingProducts = new ArrayList<>();
+        Map<UUID, Integer> requestedProducts = shoppingCartDto.getProducts();
+        List<UUID> missingProducts = new ArrayList<>();
 
         for (WarehouseInventory inventory : foundInventory) {
-            String productId = inventory.getProduct().getProductId().toString();
+            UUID productId = inventory.getProduct().getProductId();
             Integer requestedQuantity = requestedProducts.get(productId);
 
             Integer availableQuantity = inventory.getQuantity();
@@ -135,17 +148,10 @@ public class WarehouseServiceImpl implements WarehouseService {
         }
     }
 
-    private static Set<UUID> getUuids(ShoppingCartDto shoppingCartDto) {
-        Set<UUID> productIds = shoppingCartDto.getProducts().keySet().stream()
-                .map(UUID::fromString)
-                .collect(Collectors.toSet());
-        return productIds;
-    }
-
     @Override
     public void addProduct(AddProductToWarehouseRequest request) {
 
-        UUID productId = UUID.fromString(request.getProductId());
+        UUID productId = request.getProductId();
         WarehouseProduct warehouseProduct = getWarehouseProduct(productId);
         WarehouseInventory warehouseInventory = WarehouseInventory.builder()
                 .product(warehouseProduct)
@@ -165,9 +171,75 @@ public class WarehouseServiceImpl implements WarehouseService {
                 .build();
     }
 
+    @Override
+    public void shippedProducts(ShippedToDeliveryRequest request) {
+
+        OrderBooking orderBooking = getOrderBooking(request.getOrderId());
+        orderBooking.setDeliveryId(request.getDeliveryId());
+        orderBookingRepository.save(orderBooking);
+        // меняем статус на Assembled
+        orderClient.assemblyOrder(request.getOrderId());
+    }
+
+    @Override
+    public void returnProducts(Map<UUID, Integer> products) {
+
+        Set<UUID> productIds = products.keySet();
+        List<WarehouseInventory> warehouseInventories = warehouseInventoryRepository.findByProductIdIn(productIds);
+        for (WarehouseInventory warehouseInventory : warehouseInventories) {
+            UUID productId = warehouseInventory.getProduct().getProductId();
+            warehouseInventory.setQuantity(warehouseInventory.getQuantity() + products.get(productId));
+        }
+
+        warehouseInventoryRepository.saveAll(warehouseInventories);
+    }
+
+    @Override
+    public BookedProductsDto assemblyProducts(AssemblyProductsForOrderRequest request) {
+
+        OrderBooking orderBooking = OrderBooking.builder()
+                .orderId(request.getOrderId())
+                .products(request.getProducts())
+                .build();
+
+        orderBookingRepository.save(orderBooking);
+
+        Set<UUID> productIds = request.getProducts().keySet();
+        List<WarehouseProduct> foundProducts = warehouseProductRepository.findByProductIdIn(productIds);
+
+        reduceQuantityFromInventory(request.getProducts());
+
+
+        return BookedProductsDto.builder()
+                .deliveryWeight(getDeliveryWeight(foundProducts))
+                .deliveryVolume(getDeliveryVolume(foundProducts))
+                .fragile(isHasFragile(foundProducts))
+                .build();
+
+    }
+
+    private void reduceQuantityFromInventory(Map<UUID, Integer> products) {
+
+        Set<UUID> productIds = products.keySet();
+        List<WarehouseInventory> warehouseInventories = warehouseInventoryRepository.findByProductIdIn(productIds);
+        for (WarehouseInventory warehouseInventory : warehouseInventories) {
+            UUID productId = warehouseInventory.getProduct().getProductId();
+            warehouseInventory.setQuantity(warehouseInventory.getQuantity() - products.get(productId));
+        }
+
+        warehouseInventoryRepository.saveAll(warehouseInventories);
+    }
+
+
     private WarehouseProduct getWarehouseProduct(UUID productId) {
         return warehouseProductRepository.findById(productId).orElseThrow(
-                () -> new NotFoundException("В склде нет продукта с id: " + productId)
+                () -> new NotFoundException("В складе нет продукта с id: " + productId)
+        );
+    }
+
+    private OrderBooking getOrderBooking(UUID orderId) {
+        return orderBookingRepository.findById(orderId).orElseThrow(
+                () -> new NotFoundException("В складе нет бронирования для заказа: " + orderId)
         );
     }
 }

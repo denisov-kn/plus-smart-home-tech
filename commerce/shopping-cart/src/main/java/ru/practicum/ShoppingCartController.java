@@ -11,6 +11,7 @@ import ru.practicum.service.ShoppingCartService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -28,7 +29,7 @@ public class ShoppingCartController implements ShoppingCartApi {
     }
 
     @Override
-    public ShoppingCartDto updateShoppingCart(String username, Map<String, Integer> products) {
+    public ShoppingCartDto updateShoppingCart(String username, Map<UUID, Integer> products) {
         log.info("Update shopping cart for {}", username);
         log.info("Updated products {}", products);
         ShoppingCartDto shoppingCart = shoppingCartService.updateShoppingCart(username, products);

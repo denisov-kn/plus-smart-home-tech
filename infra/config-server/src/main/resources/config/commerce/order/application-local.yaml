@@ -1,0 +1,11 @@
+spring:
+  sql:
+    init:
+      mode: always
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/commerce?currentSchema=order_schema
+    username: order
+    password: order
+server:
+  port: 0

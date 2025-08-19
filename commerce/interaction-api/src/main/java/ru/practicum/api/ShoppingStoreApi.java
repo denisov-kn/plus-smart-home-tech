@@ -8,23 +8,25 @@ import ru.practicum.dto.shoppingStore.ProductDto;
 import ru.practicum.dto.shoppingStore.enums.ProductCategory;
 import ru.practicum.dto.shoppingStore.enums.QuantityState;
 
+import java.util.UUID;
+
 
 public interface ShoppingStoreApi {
     @GetMapping("/api/v1/shopping-store")
     Page<ProductDto> getProducts(@RequestParam ProductCategory category, @PageableDefault(sort = {"productName"}) Pageable pageable);
 
     @GetMapping("/api/v1/shopping-store/{id}")
-    ProductDto getProduct(@PathVariable String id);
+    ProductDto getProduct(@PathVariable UUID id);
 
     @PutMapping("/api/v1/shopping-store")
     ProductDto createProduct(@RequestBody ProductDto productDto);
 
     @PostMapping("/api/v1/shopping-store/removeProductFromStore")
-    void removeProductFromStore(@RequestBody String productId);
+    void removeProductFromStore(@RequestBody UUID productId);
 
     @PostMapping("/api/v1/shopping-store/quantityState")
-    void quantityState(@RequestParam (required = true) String productId,
-                       @RequestParam (required = true) QuantityState quantityState
+    void quantityState(@RequestParam UUID productId,
+                       @RequestParam  QuantityState quantityState
                        );
 
     @PostMapping("/api/v1/shopping-store")
