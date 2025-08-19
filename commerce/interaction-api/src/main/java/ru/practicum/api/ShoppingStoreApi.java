@@ -25,8 +25,8 @@ public interface ShoppingStoreApi {
     void removeProductFromStore(@RequestBody UUID productId);
 
     @PostMapping("/api/v1/shopping-store/quantityState")
-    void quantityState(@RequestParam (required = true) UUID productId,
-                       @RequestParam (required = true) QuantityState quantityState
+    void quantityState(@RequestParam UUID productId,
+                       @RequestParam  QuantityState quantityState
                        );
 
     @PostMapping("/api/v1/shopping-store")
