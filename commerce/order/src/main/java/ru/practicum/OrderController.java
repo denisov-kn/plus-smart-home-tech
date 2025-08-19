@@ -27,7 +27,6 @@ public class OrderController implements OrderApi {
         List<OrderDto> orders =  orderService.getOrders(username);
         log.info("Orders: {}", orders);
         return orders;
-
     }
 
     @Override

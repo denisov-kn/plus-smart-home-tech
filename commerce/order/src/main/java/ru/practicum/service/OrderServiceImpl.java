@@ -1,5 +1,7 @@
 package ru.practicum.service;
 
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.clients.DeliveryClient;
@@ -63,7 +65,16 @@ public class OrderServiceImpl implements OrderService {
         order.setFragile(bookedProductsDto.getFragile());
         order.setDeliveryWeight(bookedProductsDto.getDeliveryWeight());
 
-        return Mapper.toOrderDto(orderRepository.save(order));
+        order = orderRepository.save(order);
+
+        //Резервирование товара
+        AssemblyProductsForOrderRequest assemblyRequest = AssemblyProductsForOrderRequest.builder()
+                .products(order.getProducts())
+                .orderId(order.getOrderId())
+                .build();
+        warehouseClient.assemblyProducts(assemblyRequest);
+
+        return Mapper.toOrderDto(order);
     }
 
     @Override
@@ -105,10 +116,10 @@ public class OrderServiceImpl implements OrderService {
         }
 
         if (!problems.isEmpty()) {
-            throw new IllegalStateException(
+            throw new BadRequestException(
                     "Нельзя сделать возврат: " + String.join("; ", problems)
             );
-        }  // TODO добавить обработку исключения
+        }
     }
 
     @Override
@@ -157,9 +168,13 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto calculateTotal(UUID orderId) {
         Order order = getOrderById(orderId);
         OrderDto orderDto = Mapper.toOrderDto(order);
+
+        Double totalCost = paymentClient.totalCost(orderDto);
+        orderDto.setTotalPrice(totalCost);
+
         //Создание платежа
         PaymentDto paymentDto = paymentClient.createPayment(orderDto);
-        Double totalCost = paymentClient.totalCost(orderDto);
+
 
         order.setPaymentId(paymentDto.getPaymentId());
         order.setTotalPrice(totalCost);
@@ -168,6 +183,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderDto calculateDelivery(UUID orderId) {
         Order order = getOrderById(orderId);
 

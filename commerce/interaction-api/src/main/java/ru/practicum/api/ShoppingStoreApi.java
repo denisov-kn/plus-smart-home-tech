@@ -16,7 +16,7 @@ public interface ShoppingStoreApi {
     Page<ProductDto> getProducts(@RequestParam ProductCategory category, @PageableDefault(sort = {"productName"}) Pageable pageable);
 
     @GetMapping("/api/v1/shopping-store/{id}")
-    ProductDto getProduct(@PathVariable UUID productId);
+    ProductDto getProduct(@PathVariable UUID id);
 
     @PutMapping("/api/v1/shopping-store")
     ProductDto createProduct(@RequestBody ProductDto productDto);

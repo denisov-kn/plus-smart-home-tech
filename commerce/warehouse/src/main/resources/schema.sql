@@ -18,3 +18,11 @@ CREATE TABLE IF NOT EXISTS order_booking (
     order_id UUID PRIMARY KEY,
     delivery_id UUID
 );
+
+CREATE TABLE IF NOT EXISTS order_booking_products (
+  order_booking_id UUID NOT NULL,
+  product_id       UUID NOT NULL,
+  quantity         INT NOT NULL,
+  PRIMARY KEY (order_booking_id, product_id),
+  FOREIGN KEY (order_booking_id) REFERENCES order_booking(order_id) ON DELETE CASCADE
+);

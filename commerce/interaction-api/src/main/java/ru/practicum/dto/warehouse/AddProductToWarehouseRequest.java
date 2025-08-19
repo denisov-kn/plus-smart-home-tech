@@ -11,6 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString
+@Builder
 public class AddProductToWarehouseRequest {
     UUID productId;
     Integer quantity;

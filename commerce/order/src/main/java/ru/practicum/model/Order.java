@@ -41,7 +41,7 @@ public class Order {
     UUID deliveryId;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "to_address_id")
+    @JoinColumn(name = "address_id")
     Address orderAddress;
 
     @Enumerated(EnumType.STRING)

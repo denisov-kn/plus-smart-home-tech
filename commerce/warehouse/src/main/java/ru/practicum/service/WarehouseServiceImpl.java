@@ -183,12 +183,19 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     @Override
     public void returnProducts(Map<UUID, Integer> products) {
-        
+
+        Set<UUID> productIds = products.keySet();
+        List<WarehouseInventory> warehouseInventories = warehouseInventoryRepository.findByProductIdIn(productIds);
+        for (WarehouseInventory warehouseInventory : warehouseInventories) {
+            UUID productId = warehouseInventory.getProduct().getProductId();
+            warehouseInventory.setQuantity(warehouseInventory.getQuantity() + products.get(productId));
+        }
+
+        warehouseInventoryRepository.saveAll(warehouseInventories);
     }
 
     @Override
     public BookedProductsDto assemblyProducts(AssemblyProductsForOrderRequest request) {
-        //TODO еще раз проверить что продуктов хватает
 
         OrderBooking orderBooking = OrderBooking.builder()
                 .orderId(request.getOrderId())
@@ -226,7 +233,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     private WarehouseProduct getWarehouseProduct(UUID productId) {
         return warehouseProductRepository.findById(productId).orElseThrow(
-                () -> new NotFoundException("В склде нет продукта с id: " + productId)
+                () -> new NotFoundException("В складе нет продукта с id: " + productId)
         );
     }
 

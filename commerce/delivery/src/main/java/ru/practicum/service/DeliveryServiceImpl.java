@@ -45,7 +45,7 @@ public class DeliveryServiceImpl implements DeliveryService{
         delivery.setDeliveryState(DeliveryState.DELIVERED);
         deliveryRepository.save(delivery);
         //сообщаем что заказ не доставлен
-        orderClient.deliveryOrderFailed(deliveryId);
+        orderClient.deliveryOrder(delivery.getOrderId());
 
     }
 

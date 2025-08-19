@@ -27,9 +27,10 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentDto createPayment(OrderDto orderDto) {
        Payment payment = Payment.builder()
                .state(PaymentState.PENDING)
-               .deliveryTotal(orderDto.getTotalPrice())
+               .deliveryTotal(orderDto.getDeliveryPrice())
                .feeTotal(getFee(orderDto.getTotalPrice()))
                .totalPayment(orderDto.getTotalPrice())
+               .orderId(orderDto.getOrderId())
                .build();
 
        paymentRepository.save(payment);
@@ -45,11 +46,10 @@ public class PaymentServiceImpl implements PaymentService {
         b. Налог прибавляем к стоимости товара, получим 110 рублей.
         c. Добавляем стоимость доставки — 50 рублей. И в итоге пользователь видит сумму: 160 рублей.
          */
-        Double productPrice = orderDto.getTotalPrice();
+        Double productPrice = orderDto.getProductPrice();
         Double deliveryPrice = orderDto.getDeliveryPrice();
         Double feeTotal = getFee(productPrice);
         return productPrice + deliveryPrice + feeTotal;
-
     }
 
     private static Double getFee(Double productPrice) {
